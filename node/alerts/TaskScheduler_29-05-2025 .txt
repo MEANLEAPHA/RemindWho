@@ -1,0 +1,46 @@
+[29/05/2025 19:50:55] Task scheduler started - will create tasks every 2 minutes
+[29/05/2025 19:50:55] Task scheduler started - will create tasks every 2 minutes
+[29/05/2025 19:53:49] Task scheduler started - will create tasks every 2 minutes
+[29/05/2025 19:53:49] Task scheduler started - will create tasks every 2 minutes
+[29/05/2025 19:53:52] Task scheduler started - will create tasks every 2 minutes
+[29/05/2025 19:53:52] Task scheduler started - will create tasks every 2 minutes
+[29/05/2025 19:54:00] New Task created: Gaming 0010
+[29/05/2025 19:54:00] New Task created: Buy Food 0011
+[29/05/2025 19:56:00] New Task created: Meeting 0007
+[29/05/2025 19:56:00] New Task created: TV 0009
+[29/05/2025 19:58:00] New Task created: Exercise 0013
+[29/05/2025 19:58:00] New Task created: Gaming 0015
+[29/05/2025 19:59:00] Reminder: Task "Buy Food 0011" is going to end in 15 minutes!
+[29/05/2025 19:59:00] Reminder: Task "Gaming 0010" is going to end in 15 minutes!
+[29/05/2025 20:00:00] New Task created: Meeting 0012
+[29/05/2025 20:00:00] New Task created: Buy Food 0012
+[29/05/2025 20:01:00] Reminder: Task "Meeting 0007" is going to end in 15 minutes!
+[29/05/2025 20:01:00] Reminder: Task "TV 0009" is going to end in 15 minutes!
+[29/05/2025 20:02:00] New Task created: Gaming 0011
+[29/05/2025 20:02:00] New Task created: Buy Food 0012
+[29/05/2025 20:46:08] Task scheduler started - will create tasks every 2 minutes
+[29/05/2025 20:48:00] New Task created: Meeting 0018
+[29/05/2025 20:50:00] New Task created: Gaming 0006
+[29/05/2025 20:52:00] New Task created: Gaming 0010
+[29/05/2025 20:53:00] Reminder: Task "Meeting 0018" is going to end in 15 minutes!
+[29/05/2025 20:54:00] New Task created: Buy Food 0016
+[29/05/2025 20:55:00] Reminder: Task "Gaming 0006" is going to end in 15 minutes!
+[29/05/2025 20:56:00] New Task created: Exercise 0010
+[29/05/2025 20:57:00] Reminder: Task "Gaming 0010" is going to end in 15 minutes!
+[29/05/2025 20:58:00] New Task created: Exercise 0007
+[29/05/2025 21:10:29] Task scheduler started - will create tasks every 2 minutes
+[29/05/2025 21:11:55] Task scheduler started - will create tasks every 2 minutes
+[29/05/2025 21:11:59] Task scheduler started - will create tasks every 2 minutes
+[29/05/2025 21:12:00] New Task created: Exercise 0015
+[29/05/2025 21:12:02] Task scheduler started - will create tasks every 2 minutes
+[29/05/2025 21:12:05] Task scheduler started - will create tasks every 2 minutes
+[29/05/2025 21:12:09] Task scheduler started - will create tasks every 2 minutes
+[29/05/2025 21:12:14] Task scheduler started - will create tasks every 2 minutes
+[29/05/2025 21:14:00] New Task created: Gaming 0012
+[29/05/2025 21:16:00] New Task created: Exercise 0022
+[29/05/2025 21:18:00] New Task created: Playing 0022
+[29/05/2025 21:19:00] Reminder: Task "Gaming 0012" is going to end in 15 minutes!
+[29/05/2025 21:20:00] New Task created: TV 0017
+[29/05/2025 21:20:30] Task scheduler started - will create tasks every 2 minutes
+[29/05/2025 21:22:00] New Task created: TV 0028
+[29/05/2025 21:24:00] New Task created: TV 0008

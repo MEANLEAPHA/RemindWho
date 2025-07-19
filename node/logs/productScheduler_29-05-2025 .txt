@@ -1,0 +1,16 @@
+[29/05/2025 18:19:44] Product scheduler started - will create products every 2 minutes
+[29/05/2025 18:20:23] Product scheduler started - will create products every 2 minutes
+[29/05/2025 18:20:46] Product scheduler started - will create products every 2 minutes
+[29/05/2025 18:20:51] Product scheduler started - will create products every 2 minutes
+[29/05/2025 18:22:00] Error: Table 'readwelldbms.products' doesn't exist
+[29/05/2025 18:23:45] Product scheduler started - will create products every 2 minutes
+[29/05/2025 18:24:04] Product scheduler started - will create products every 2 minutes
+[29/05/2025 18:24:08] Product scheduler started - will create products every 2 minutes
+[29/05/2025 18:24:18] Product scheduler started - will create products every 2 minutes
+[29/05/2025 18:24:21] Product scheduler started - will create products every 2 minutes
+[29/05/2025 18:24:32] Product scheduler started - will create products every 2 minutes
+[29/05/2025 18:24:41] Product scheduler started - will create products every 2 minutes
+[29/05/2025 18:24:56] Product scheduler started - will create products every 2 minutes
+[29/05/2025 18:26:00] Error: Table 'readwelldbms.products' doesn't exist
+[29/05/2025 18:28:00] Error: Table 'readwelldbms.products' doesn't exist
+[29/05/2025 18:30:00] Error: Table 'readwelldbms.products' doesn't exist

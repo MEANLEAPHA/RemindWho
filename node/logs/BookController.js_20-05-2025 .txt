@@ -1,0 +1,1 @@
+[20/05/2025 20:30:02] You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '* FROM book_upload' at line 1

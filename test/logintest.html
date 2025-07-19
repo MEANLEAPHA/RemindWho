@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+      <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <title>Web Program Homeword</title>
+    
+   <style>
+
+
+ 
+ #formLogin
+{
+    width: 690px;
+    height: auto;
+    
+      margin: 10px;
+    border-radius: 10px;
+    padding: 15px;
+    
+}
+#logNsign{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+#formLogin #createAcc{
+    text-align: center;
+    text-decoration: none;
+    color: black;
+    
+}
+
+#logNsign a{
+    text-decoration: none;
+    color: rgb(83, 83, 83);
+}
+#logNsign #log{
+    color:rgb(10, 89, 145);
+    font-weight: 430;
+    font-weight: bold;
+    font-size: 20px;
+}
+p{
+    font-weight: 500;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+
+#formLogin #Img{
+    width: 100%;
+    height: auto;
+    margin: 5px;
+    
+}
+#formLogin #Img img{
+    width: 300px;
+    height: 100px;
+}
+#formLogin form #email,#password,#name{
+    width: 75%;
+    height: 30px;
+    border-radius: 10px;
+    background:transparent;
+    border: 0.5px solid rgb(10, 89, 145);
+    padding: 3px 3px 3px 5px;
+}
+#formLogin #rem{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    
+    justify-items: center;
+    align-items: center;
+    margin: 0;
+    
+}
+#formLogin #rem #checkbox{
+    width: 15px;
+    height: 15px;
+}
+#formLogin #submit{
+    width: 30%;
+    height: 30px;
+    padding: 6px;
+    background-color:rgb(123, 176, 213);
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 10px;
+}
+
+
+@media (max-width: 1024px) {
+     #formLogin{
+        width: 50%;
+        height: auto;
+      
+        margin-top: 20px;
+        margin: auto;
+        border-radius: 10px;
+        padding: 15px;
+        
+    }
+ 
+}
+
+@media (max-width: 768px) {
+     #formLogin{
+    width: 85%;
+    height: auto;
+  
+    margin-top: 20px;
+    margin: auto;
+    border-radius: 10px;
+    padding: 15px;
+    
+}
+
+}
+   </style>
+</head>
+<body>
+       <div id="formLogin"  data-aos="fade-up">
+            <span id="logNsign">
+                <a href="" id="log"> Login </a> | <a href="Signup-Page.html" id="sign"> Signup</a>
+            </span>
+            <p>Login to your Account</p>
+            <br>
+            <div id="Img"><img src="READ.jpg" ></div>
+            <br>
+            <form id="member-form">
+                <label for="">Email</label>
+                <br>
+                <input type="text" id="email" placeholder="name@example.hw">
+                <br><br>
+                <span id="emailInco"></span>
+                <label for="">Password</label><br>
+                <input type="password" id="password" placeholder="homework">
+                <span id="passInco"></span>
+                <br>
+               
+                <br>
+                <input type="submit" id="submit" value="Login" >
+            
+            </form>
+            <br>
+           
+            <p style="text-align: center;"> <a href="" id="createAcc" >Don't have an accouunt? <span style="color: #7a4e32;">Create one</span> </a></p>
+            
+        </div>
+   
+    <script >
+   $(document).ready(function() {
+
+    $('#member-form').on('submit', function(e) {
+        e.preventDefault();
+
+        // Get user's browser timezone
+        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        const member = {
+            email: $('#email').val(),
+            password: $('#password').val(),
+            timezone: userTimezone  // add timezone here
+        };
+
+        $.ajax({
+            url: 'http://localhost:3000/remindme/login',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(member),
+            success: function(response) {
+                alert(response.message);
+                localStorage.setItem('token', response.token);
+               location.href = 'http://127.0.0.1:5500/index.html';
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX Error:", xhr.responseText);
+                alert("login member: " + xhr.responseText);
+            }
+        });
+    });
+
+});
+
+  AOS.init();
+
+
+    </script>
+</body>
+</html>

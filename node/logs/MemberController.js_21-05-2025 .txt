@@ -1,0 +1,5 @@
+[21/05/2025 18:30:08] data and hash arguments required
+[21/05/2025 18:53:07] bcrypt is not defined
+[21/05/2025 18:55:52] data and hash arguments required
+[21/05/2025 21:37:44] data and hash arguments required
+[21/05/2025 21:38:43] data and hash arguments required

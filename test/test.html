@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css'>
+    <script src="../../jquery.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js'></script>
+    <style>
+        body{
+    background:#eee;
+}
+
+.card {
+    box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 0 solid rgba(0,0,0,.125);
+    border-radius: 1rem;
+}
+
+.card-body {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.5rem 1.5rem;
+}
+    </style>
+</head>
+<body>
+  
+<form id="note-form">
+<div class="container">
+  <!-- Title -->
+  <div class="d-flex justify-content-between align-items-lg-center py-3 flex-column flex-lg-row">
+    <h2 class="h5 mb-3 mb-lg-0"><a href="../../pages/admin/customers.html" class="text-muted"><i class="bi bi-arrow-left-square me-2"></i></a> Add New Note +</h2>
+    <div class="hstack gap-3">
+      <button class="btn btn-light btn-sm btn-icon-text"><i class="bi bi-x"></i> <span class="text">Cancel</span></button>
+       <button type="submit" class="btn btn-primary btn-sm btn-icon-text"><span class="text">Add</span></button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h3 class="h6 mb-4">Basic information</h3>
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">Note Title</label>
+                <input type="text" class="form-control" id="NoteTitle" placeholder="Enter title" required>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">User Id</label>
+                <input type="number" class="form-control" id="userId" placeholder="Enter author name" required>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-15">
+              <div class="mb-3">
+                
+                <h3 class="h6">Description</h3>
+                    <textarea class="form-control" rows="3" placeholder="Enter description" id="description" required></textarea>
+              </div>
+            </div>
+        
+          </div>
+           <div class="row">
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">Category</label>
+                <select class="select2 form-control select2-hidden-accessible" data-select2-placeholder="Select country" data-select2-id="select2-data-1-gy14" tabindex="-1" aria-hidden="true" required id="cate">
+                  <option data-select2-id="select2-data-3-ibs9"></option>
+                  <option value="Reading">Reading</option>
+                  <option value="Study">Study</option>
+                  <option value="Work">Work</option>
+                  <option value="Social">Social</option>
+                  <option value="Entertainment">Entertainment</option>
+                  <option value="Business">Business</option>
+                  <option value="Important">Important</option>
+                  <option value="Urgent">Urgent</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">Priority</label>
+                <select class="select2 form-control select2-hidden-accessible" data-select2-placeholder="Select state" data-select2-id="select2-data-4-680y" tabindex="-1" aria-hidden="true" required id="priority">
+                  <option data-select2-id="select2-data-6-cshs"></option>
+                  <option value="Low">Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <!-- date -->
+           <div class="row">
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">Start At</label>
+                 <input type="datetime-local" class="form-control" id="startAt"  required>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">End At or Deadline</label>
+                <input type="datetime-local" class="form-control" id="EndAt"  required>
+              </div>
+            </div>
+          </div>
+       
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</form>
+  
+
+<script>
+    $(document).ready(function(){
+ 
+
+        // Handle form submission
+        $('#note-form').on('submit', function(e) {
+            e.preventDefault();
+            const TaskValue = {
+             member_id: $('#userId').val(),
+              title: $('#NoteTitle').val(),
+              description: $('#description').val(),
+              task_name: $('#cate').val(),
+              priority: $('#priority').val(),
+              start_time: $('#startAt').val(),
+              deadline_time: $('#EndAt').val(),
+            
+            };
+
+            // Create product using API
+            $.ajax({
+                url: 'http://localhost:3000/ToDo/readwell/create',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(TaskValue),
+                success: function(response) {
+                    alert(response.message);
+                    $('#note-form')[0].reset();
+                    window.location.url = 'http://localhost:3000/page/admin/view/todo/ToDo.html';
+                   // Reload the table
+                },
+                error: function(xhr, status, error) {
+                    alert('Error creating Task: ' + error);
+                }
+            });
+        });
+
+    });
+</script>
+</body>
+</html>
+
+const createToDo = async (req, res) => {
+  try {
+    // Get data from req.body
+    const { member_id, title, description, task_name, start_time, deadline_time, priority} = req.body;
+
+    // Validate
+    if (!member_id || !title || !description || !task_name || !start_time || !deadline_time || !priority ) {
+      return res.status(400).json({ message: "Missing parameters", Result: "False" });
+    } 
+
+    // Insert into DB
+    const [result] = await db.query(
+      "INSERT INTO `todo_tasks`(`member_id`, `title`, `description`, `task_name`, `start_time`, `deadline_time`, `priority`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [member_id, title, description, task_name, start_time, deadline_time, priority]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(500).json({ message: "Error creating task", Result: "False" });
+    }
+
+    // Optional: Return full book list
+    const [listTask] = await db.query("SELECT * FROM todo_tasks");
+
+    res.json({
+      message: "Task created successfully",
+      task:listTask
+    });
+
+  } catch (error) {
+     alert("ToDoController.js", error.message, res);
+  }
+};
+
+
+
+const  updateToDo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { member_id, title, description, task_name, start_time, deadline_time, priority } = req.body;
+  
+
+    if (!member_id || !title || !description || !task_name || !start_time || !deadline_time || !priority ) {
+      return res.json({ message: "Missing parameters", Result: "False" });
+    }
+
+    const [result] = await db.query(
+      "UPDATE `todo_tasks` SET `member_id` = ?, `title` = ?, `description` = ?, `task_name` = ?, `start_time` = ?, `deadline_time` = ?, `priority` = ?  WHERE `task_id` = ?",
+      [member_id, title, description, task_name, start_time, deadline_time, priority, id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.json({ message: "Task not updated", Result: "False" });
+    }
+
+    const [listTask] = await db.query("SELECT * FROM todo_tasks");
+    res.json({ message: "Update successful", task: listTask });
+  } catch (error) {
+    console.error("Update error:", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Note</title>
+  <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css'>
+  <script src="../../jquery.js"></script>
+  <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js'></script>
+  <style>
+    body {
+      background: #eee;
+    }
+
+    .card {
+      box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      background-color: #fff;
+      border-radius: 1rem;
+    }
+
+    .card-body {
+      flex: 1 1 auto;
+      padding: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<form id="note-form">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-lg-center py-3 flex-column flex-lg-row">
+      <h2 class="h5 mb-3 mb-lg-0">
+        <a href="../../pages/admin/customers.html" class="text-muted"><i class="bi bi-arrow-left-square me-2"></i></a>
+        Add New Note +
+      </h2>
+      <div class="hstack gap-3">
+        <button class="btn btn-light btn-sm btn-icon-text" type="button"><i class="bi bi-x"></i> Cancel</button>
+        <button type="submit" class="btn btn-primary btn-sm btn-icon-text"><span class="text">Update</span></button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card mb-4">
+          <div class="card-body">
+            <h3 class="h6 mb-4">Basic information</h3>
+
+            <div class="row">
+              <div class="col-lg-6 mb-3">
+                <label class="form-label">Note Title</label>
+                <input type="text" class="form-control" id="NoteTitle" placeholder="Enter title" required>
+              </div>
+              <div class="col-lg-6 mb-3">
+                <label class="form-label">User Id</label>
+                <input type="number" class="form-control" id="userId" placeholder="Enter user ID" required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <h3 class="h6">Description</h3>
+              <textarea class="form-control" rows="3" placeholder="Enter description" id="description" required></textarea>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-6 mb-3">
+                <label class="form-label">Category</label>
+                <select class="form-control" id="cate" required>
+                  <option value="">Select category</option>
+                  <option value="reading">Reading</option>
+                  <option value="study">Study</option>
+                  <option value="work">Work</option>
+                  <option value="social">Social</option>
+                  <option value="entertainment">Entertainment</option>
+                  <option value="business">Business</option>
+                  <option value="important">Important</option>
+                  <option value="urgent">Urgent</option>
+                </select>
+              </div>
+
+              <div class="col-lg-6 mb-3">
+                <label class="form-label">Priority</label>
+                <select class="form-control" id="priority" required>
+                  <option value="">Select priority</option>
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-6 mb-3">
+                <label class="form-label">Start At</label>
+                <input type="datetime-local" class="form-control" id="startAt" required>
+              </div>
+              <div class="col-lg-6 mb-3">
+                <label class="form-label">End At or Deadline</label>
+                <input type="datetime-local" class="form-control" id="EndAt" required>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<script>
+  function getQueryParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      id: params.get('id'),
+    };
+  }
+
+  function formatForDatetimeLocal(dateStr) {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return '';
+    return date.toISOString().slice(0, 16);
+  }
+
+  $(document).ready(function () {
+    const task = getQueryParams();
+
+    $.ajax({
+      url: 'http://localhost:3000/ToDo/readwell/filter/' + task.id,
+      method: 'GET',
+      success: function (response) {
+        const taskData = response.task[0];
+        $('#NoteTitle').val(taskData.title);
+        $('#userId').val(taskData.member_id);
+        $('#description').val(taskData.description);
+        $('#cate').val(taskData.task_name.toLowerCase());
+        $('#priority').val(taskData.priority.toLowerCase());
+        $('#startAt').val(formatForDatetimeLocal(taskData.start_time));
+        $('#EndAt').val(formatForDatetimeLocal(taskData.deadline_time));
+      },
+      error: function (xhr, status, error) {
+        alert('Error fetching Task: ' + error);
+      }
+    });
+
+    $('#note-form').on('submit', function (e) {
+      e.preventDefault();
+
+      const TaskValue = {
+        member_id: $('#userId').val(),
+        title: $('#NoteTitle').val(),
+        description: $('#description').val(),
+        task_name: $('#cate').val(),
+        priority: $('#priority').val(),
+        start_time: $('#startAt').val(),
+        deadline_time: $('#EndAt').val(),
+      };
+
+      $.ajax({
+        url: 'http://localhost:3000/ToDo/readwell/update/' + task.id,
+        method: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(TaskValue),
+        success: function (response) {
+          alert(response.message);
+          $('#note-form')[0].reset();
+        },
+        error: function (xhr, status, error) {
+          alert('Error updating Task: ' + error);
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
+
+
+// import express
+const  express = require('express');
+// create app
+const app = express();
+// cors
+const cors = require('cors');
+app.use(cors());
+// port
+const port =3000;
+
+const {calculateAlertTimes} = require('./src/service/sendAlert');
+// const {startScheduler} = require('./src/service/autoAdd');
+const {ToDo}=require('./src/router/toDo');
+
+// middleware
+app.use(express.json()) // for parsing application/json
+app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
+
+ToDo(app);
+
+
+
+
+// start server
+app.listen(port, ()=>{
+    console.log('localhost:3000');
+    // startScheduler();
+}
+);
+
+
+
+
+
+
+
+
+
+const schedule = require('node-schedule');
+const {sendEmail} = require('../../email');
+const db = require('../config/db');
+
+// Function to calculate alert times
+const calculateAlertTimes = (startTime, endTime, beforeStart, beforeEnd) => {
+    return {
+        alertStart: new Date(startTime), // Start alert
+        alertBeforeStart: new Date(startTime - beforeStart * 60000), // Alert before start (converted from minutes)
+        alertDeadline: new Date(endTime), // Deadline alert
+        alertBeforeEnd: new Date(endTime - beforeEnd * 60000) // Alert before deadline
+    };
+};
+
+// Schedule Job to check tasks every minute
+schedule.scheduleJob('* * * * *', async () => {
+    try {
+        const [tasks] = await db.query("SELECT * FROM todo_tasks");
+
+        tasks.forEach(async task => {
+            if (task.start_status === 'active' && new Date() >= calculateAlertTimes(task.start_time, task.deadline_time, task.alert_before_start, task.alert_before_end).alertStart) {
+                await sendEmail(task.member_email, `Task Started - ${task.title}`, `Your task "${task.title}" has started.`);
+            }
+            if (task.beforeStart_status === 'active' && new Date() >= calculateAlertTimes(task.start_time, task.deadline_time, task.alert_before_start, task.alert_before_end).alertBeforeStart) {
+                await sendEmail(task.member_email, `Reminder Before Start - ${task.title}`, `Your task "${task.title}" starts soon.`);
+            }
+            if (task.beforeEnd_status === 'active' && new Date() >= calculateAlertTimes(task.start_time, task.deadline_time, task.alert_before_start, task.alert_before_end).alertBeforeEnd) {
+                await sendEmail(task.member_email, `Reminder Before Deadline - ${task.title}`, `Your task "${task.title}" is nearing its deadline.`);
+            }
+            if (task.deadline_status === 'active' && new Date() >= calculateAlertTimes(task.start_time, task.deadline_time, task.alert_before_start, task.alert_before_end).alertDeadline) {
+                await sendEmail(task.member_email, `Task Deadline - ${task.title}`, `Your task "${task.title}" has reached its deadline.`);
+            }
+        });
+
+    } catch (error) {
+        console.error('❌ Error processing task alerts:', error);
+    }
+});
+
+console.log('⏳ Task scheduler running... checking every minute.');
+
+module.exports = {calculateAlertTimes};
+
+
+
+
+
+
+
+
+const schedule = require('node-schedule');
+const { sendEmail } = require('../../email');
+const db = require('../config/db');
+
+// Function to calculate alert times
+const calculateAlertTimes = (startTime, endTime, beforeStart, beforeEnd) => {
+    return {
+        alertStart: new Date(startTime), // Start alert
+        alertBeforeStart: new Date(new Date(startTime).getTime() - beforeStart * 60000), // Alert before start
+        alertDeadline: new Date(endTime), // Deadline alert
+        alertBeforeEnd: new Date(new Date(endTime).getTime() - beforeEnd * 60000) // Alert before deadline
+    };
+};
+
+// Schedule Job to check tasks every minute
+schedule.scheduleJob('* * * * *', async () => {
+    try {
+        const [tasks] = await db.query("SELECT * FROM todo_tasks");
+
+        for (const task of tasks) {
+            const times = calculateAlertTimes(task.start_time, task.deadline_time, task.alert_before_start, task.alert_before_end);
+            const now = new Date();
+
+            // Start alert
+            if (
+                task.start_status === 'active' &&
+                !task.start_alert_sent &&
+                now >= times.alertStart
+            ) {
+                await sendEmail(task.member_email, `Task Started - ${task.title}`, `Your task "${task.title}" has started.`);
+                await db.query("UPDATE todo_tasks SET start_alert_sent = 1 WHERE task_id = ?", [task.task_id]);
+            }
+
+            // Alert before start
+            if (
+                task.beforeStart_status === 'active' &&
+                !task.before_start_alert_sent &&
+                now >= times.alertBeforeStart
+            ) {
+                await sendEmail(task.member_email, `Reminder Before Start - ${task.title}`, `Your task "${task.title}" starts soon.`);
+                await db.query("UPDATE todo_tasks SET before_start_alert_sent = 1 WHERE task_id = ?", [task.task_id]);
+            }
+
+            // Alert before end
+            if (
+                task.beforeEnd_status === 'active' &&
+                !task.before_end_alert_sent &&
+                now >= times.alertBeforeEnd
+            ) {
+                await sendEmail(task.member_email, `Reminder Before Deadline - ${task.title}`, `Your task "${task.title}" is nearing its deadline.`);
+                await db.query("UPDATE todo_tasks SET before_end_alert_sent = 1 WHERE task_id = ?", [task.task_id]);
+            }
+
+            // Deadline alert
+            if (
+                task.deadline_status === 'active' &&
+                !task.deadline_alert_sent &&
+                now >= times.alertDeadline
+            ) {
+                await sendEmail(task.member_email, `Task Deadline - ${task.title}`, `Your task "${task.title}" has reached its deadline.`);
+                await db.query("UPDATE todo_tasks SET deadline_alert_sent = 1 WHERE task_id = ?", [task.task_id]);
+            }
+        }
+
+    } catch (error) {
+        console.error('❌ Error processing task alerts:', error);
+    }
+});
+
+console.log('⏳ Task scheduler running... checking every minute.');
+
+module.exports = { calculateAlertTimes };
+// Import database
+const db = require("../config/db");
+// const alert = require("../config/todo_alert");
+
+
+const { calculateAlertTimes } = require('../service/sendAlert'); // Import logic
+
+// Example function for handling alerts
+const getTaskAlerts = (req, res) => {
+    const { startTime, endTime, beforeStart, beforeEnd } = req.body; // Get user input
+
+    const alertTimes = calculateAlertTimes(startTime, endTime, beforeStart, beforeEnd);
+    res.json(alertTimes); // Send alert times as JSON response
+};
+// Get All or filter all Function
+const displayAllToDo = async (req, res) => {
+    try {
+        let [listTask] = await db.query("SELECT * FROM todo_tasks");
+        res.json({
+            message: "Display All tasks Success",
+            task: listTask
+        });
+    } catch (error) {
+        console.error("❌ Error in ToDoController.js:", error.message); // Logs the error in the console
+        res.status(500).json({ error: "Internal Server Error", details: error.message }); // Sends error response to client
+    }
+};
+
+// Get One or Filter Function
+const filterOneToDo = async (req,res)=>{
+    try{
+        let id = req.params.id; 
+      if(!id){
+            res.json({message:"missing Id",Result:"False"})
+         }
+       
+        let [listTask] = await db.query("SELECT * FROM todo_tasks WHERE task_id = ?", [id]);
+           if (!listTask) {
+            return res.json({ message: "task not found", Result: "False" });
+        }
+         res.json(
+        {
+            message:"Display One task Success",
+            task:listTask
+        }
+    );
+    }
+   catch(error)
+   {
+    alert("ToDoController.js",error.message,res)
+   }
+   
+}
+ 
+// Create Function
+const createToDo = async (req, res) => {
+  try {
+    // Get data from req.body
+    const { member_id, member_email ,title, description, task_name, start_time, deadline_time, priority, 
+            start_status, deadline_status} = req.body;
+
+    // Validate required fields
+    if (!member_id || !member_email || !title || !description || !task_name || !start_time || !deadline_time || !priority ) {
+      return res.status(400).json({ message: "Missing required parameters", Result: "False" });
+    }
+
+    // Insert into DB
+    const [result] = await db.query(
+      "INSERT INTO `todo_tasks`(`member_id`, `member_email`, `title`, `description`, `task_name`, `start_time`, `deadline_time`, `priority`,  `start_status`, `deadline_status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      [member_id, member_email, title, description, task_name, start_time, deadline_time, priority,  start_status, deadline_status]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(500).json({ message: "Error creating task", Result: "False" });
+    }
+
+    // Optional: Retrieve and return full task list
+    const [listTask] = await db.query("SELECT * FROM todo_tasks");
+
+    res.json({
+      message: "Task created successfully",
+      task: listTask
+    });
+
+  } catch (error) {
+    console.error("ToDoController.js Error:", error.message);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
+
+// Delete Function
+const  deleteToDo= async (req, res) => {
+    try {
+        let id = req.params.id; 
+
+        if (!id) {
+            return res.json({ message: "Missing ID parameter", Result: "False" });
+        }
+        let [result] = await db.query("DELETE FROM todo_tasks WHERE task_id = ?", [id]);
+
+        if (result.affectedRows === 0) {
+            return res.json({ message: "Task not found or already deleted", Result: "False" });
+        }
+        let [listTask]=await db.query("SELECT * FROM todo_tasks");
+        res.json(
+            { message: "Delete successful", 
+            task: listTask }
+        );
+
+    } catch (error) {
+        alert("ToDoController.js",error.message,res)
+    }
+};
+
+// Update Function
+const updateToDo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { member_id, member_email, title, description, task_name, start_time, deadline_time, priority, 
+            start_status, deadline_status, } = req.body;
+
+    // Validate required fields
+    if (!member_id || !title || !description || !task_name || !start_time || !deadline_time || !priority) {
+      return res.status(400).json({ message: "Missing required parameters", Result: "False" });
+    }
+
+    // Update task in the database
+    const [result] = await db.query(
+      `UPDATE todo_tasks 
+       SET member_id = ?, member_email = ?,title = ?, description = ?, task_name = ?, start_time = ?, 
+           deadline_time = ?, priority = ?, start_status = ?, deadline_status = ? WHERE task_id = ?`,
+      [member_id, member_email, title, description, task_name, start_time, deadline_time, priority, 
+        start_status, deadline_status,  id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Task not found or not updated", Result: "False" });
+    }
+
+    // Fetch updated task list
+    const [listTask] = await db.query("SELECT * FROM todo_tasks");
+
+    res.json({ message: "Task updated successfully", task: listTask });
+
+  } catch (error) {
+    console.error("Update error:", error.message);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
+
+
+const loginMember = async (req, res) => {
+  try {
+    const { email, password, timezone } = req.body;
+
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({ message: "Missing parameters", Result: "False" });
+    }
+
+    const [user] = await db.query("SELECT * FROM member_user WHERE email = ?", [email]);
+
+    if (user.length === 0) {
+      return res.status(404).json({ message: "No user found", Result: "False" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user[0].password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Login unsuccessful: Invalid password", Result: "False" });
+    }
+
+    // Update user's timezone if provided
+    if (timezone) {
+      await db.query("UPDATE member_user SET timezone = ? WHERE user_id = ?", [timezone, user[0].user_id]);
+    }
+
+    // // Generate JWT token
+    // const token = jwt.sign({ email: user[0].email, userId: user[0].user_id }, TOKEN_RESOURSE_SECRET, { expiresIn: "1h" });
+
+    res.json({ message: "Login successful", token, Result: "True" });
+
+  } catch (error) {
+    logError("MemberController.js", error.message, res);
+  }
+};
+
+   const createMember = async (req, res) => {
+  try {
+    const { username, email, password, timezone } = req.body;
+
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: "Missing parameters", Result: "False" });
+    }
+
+    const hash = await bcrypt.hash(password, 10);
+
+    const [result] = await db.query(
+      "INSERT INTO `users`(`username`, `email`, `password`, `timezone`) VALUES (?, ?, ?, ?)",
+      [username, email, hash, timezone || 'UTC']
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(500).json({ message: "Error creating member", Result: "False" });
+    }
+
+    res.json({
+      message: "Member created successfully",
+      Result: "True"
+    });
+
+  } catch (error) {
+    console.error("Error in createMember:", error);
+    res.status(500).json({ message: "Internal server error", Result: "False" });
+  }
+};
+
+
+module.exports = {
+
+  displayAllToDo,
+  filterOneToDo,
+  createToDo,
+  deleteToDo,
+  updateToDo,
+  getTaskAlerts,
+  loginMember,
+  createMember
+};
+
+
+host: process.env.DB_HOST, //localhost
+        user: process.env.DB_USER, //root
+        password:  process.env.DB_PASSWORD, //password
+        database: process.env.DB_NAME, //database
+        waitForConnections: process.env.DB_WAIT, //wait for connections
+        connectionLimit: process.env.DB_LIMIT, //max connections
+        port: process.env.DB_PORT, //port
+        queueLimit: process.env.DB_QUEUE,//max waiting connections
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+         $(document).ready(function(){
+              
+        // Load products when page loads
+       LoadTask();
+      
+        function LoadTask() {
+            $.ajax({
+                url: 'http://localhost:3000/ToDo/readwell/displayAll',
+                method: 'GET',
+                success: function(response) {
+                  
+                    const tasks = response.task;
+                    for(var i in  tasks){
+                      
+                         
+function formatDateTime(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleString(); // or use .toLocaleDateString(), .toLocaleTimeString()
+}
+
+                        // working
+                        if(tasks[i].task_name==="work"){
+                              $('.row').append(`
+                         <div class="col-md-4 col-sm-6 content-card working_card" >
+        <div class="card-big-shadow">
+            <img src="pin.png" alt="" style="width: 40px;margin: auto;position: absolute;z-index: 100;top: -20px;left: 50%;">
+            <div class="card card-just-text" data-background="color" data-color="yellow" data-radius="none">
+                <p style="float: right;width: 90px;margin: 10px 10px auto;text-align: center;background-color: ghostwhite;opacity: 0.6;">${tasks[i].priority}</p>
+                <div class="content">
+                    <h6 class="category"><img src="reading.png" width="25px"><i>${tasks[i].task_name}</i></h6>
+                    <h4 class="title"><a href="#"><b>${tasks[i].title}</b></a></h4>
+                    <p class="description">${tasks[i].description}</p>
+                </div>
+                <div style="display: grid;gap:5px">
+                    <div style="display: flex;justify-content: space-evenly;"><label>Start at : </label> <div> ${formatDateTime(tasks[i].start_time)}</div></div>
+                    <div style="display: flex;justify-content: space-evenly;"> <label>End at : </label> <div> ${formatDateTime(tasks[i].deadline_time)}</div></div>
+                </div>
+                <br>
+                <div style="display: flex;justify-content: space-between;padding: 10px;width: 95%;margin: auto;">
+                    <div style="display: flex;justify-content: space-evenly;"><p>Create at : </p> <div> 7:10AM</div></div>
+                    <div style="display: flex;justify-content: space-evenly;gap: 15px;"> 
+                        <a href="ToDoUpdate.html?id=${tasks[i].task_id}" style="color:  rgb(10, 89, 145);"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a onclick="deleteTask(${tasks[i].task_id})" style="color: rgb(153, 33, 33);"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                </div>
+            </div> <!-- end card -->
+        </div>
+    </div>
+                        `);
+
+                        }
+
+                        // reading
+        else if(tasks[i].task_name==="reading"){
+
+              $('.row').append(`
+                         <div class="col-md-4 col-sm-6 content-card reading_card" >
+        <div class="card-big-shadow">
+            <img src="pin.png" alt="" style="width: 40px;margin: auto;position: absolute;z-index: 100;top: -20px;left: 50%;">
+       <div class="card card-just-text" data-background="color" data-color="blue" data-radius="none">
+                <p style="float: right;width: 90px;margin: 10px 10px auto;text-align: center;background-color: ghostwhite;opacity: 0.6;">${tasks[i].priority}</p>
+                <div class="content">
+                    <h6 class="category"><img src="reading.png" width="25px"><i>${tasks[i].task_name}</i></h6>
+                    <h4 class="title"><a href="#"><b>${tasks[i].title}</b></a></h4>
+                    <p class="description">${tasks[i].description}</p>
+                </div>
+                     <div style="display: grid;gap:5px">
+                    <div style="display: flex;justify-content: space-evenly;"><label>Start at : </label> <div> ${formatDateTime(tasks[i].start_time)}</div></div>
+                    <div style="display: flex;justify-content: space-evenly;"> <label>End at : </label> <div> ${formatDateTime(tasks[i].deadline_time)}</div></div>
+                </div>
+                <br>
+                <div style="display: flex;justify-content: space-between;padding: 10px;width: 95%;margin: auto;">
+                    <div style="display: flex;justify-content: space-evenly;"><p>Create at : </p> <div> 7:10AM</div></div>
+                    <div style="display: flex;justify-content: space-evenly;gap: 15px;"> 
+                        <a href="ToDoUpdate.html?id=${tasks[i].task_id}" style="color:  rgb(10, 89, 145);"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a onclick="deleteTask(${tasks[i].task_id})" style="color: rgb(153, 33, 33);"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                </div>
+            </div> <!-- end card -->
+        </div>
+    </div>
+                        `);
+
+        }
+
+        // study
+
+             else if(tasks[i].task_name==="study"){
+
+              $('.row').append(`
+                         <div class="col-md-4 col-sm-6 content-card study_card" >
+        <div class="card-big-shadow">
+            <img src="pin.png" alt="" style="width: 40px;margin: auto;position: absolute;z-index: 100;top: -20px;left: 50%;">
+       <div class="card card-just-text" data-background="color" data-color="green" data-radius="none">
+                <p style="float: right;width: 90px;margin: 10px 10px auto;text-align: center;background-color: ghostwhite;opacity: 0.6;">${tasks[i].priority}</p>
+                <div class="content">
+                    <h6 class="category"><img src="reading.png" width="25px"><i>${tasks[i].task_name}</i></h6>
+                    <h4 class="title"><a href="#"><b>${tasks[i].title}</b></a></h4>
+                    <p class="description">${tasks[i].description}</p>
+                </div>
+                     <div style="display: grid;gap:5px">
+                    <div style="display: flex;justify-content: space-evenly;"><label>Start at : </label> <div> ${formatDateTime(tasks[i].start_time)}</div></div>
+                    <div style="display: flex;justify-content: space-evenly;"> <label>End at : </label> <div> ${formatDateTime(tasks[i].deadline_time)}</div></div>
+                </div>
+                <br>
+                <div style="display: flex;justify-content: space-between;padding: 10px;width: 95%;margin: auto;">
+                    <div style="display: flex;justify-content: space-evenly;"><p>Create at : </p> <div> 7:10AM</div></div>
+                    <div style="display: flex;justify-content: space-evenly;gap: 15px;"> 
+                        <a href="ToDoUpdate.html?id=${tasks[i].task_id}" style="color:  rgb(10, 89, 145);"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a onclick="deleteTask(${tasks[i].task_id})" style="color: rgb(153, 33, 33);"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                </div>
+            </div> <!-- end card -->
+        </div>
+    </div>
+                        `);
+
+        }
+
+        // business
+
+             else if(tasks[i].task_name==="business"){
+
+              $('.row').append(`
+                         <div class="col-md-4 col-sm-6 content-card business_card" >
+        <div class="card-big-shadow">
+            <img src="pin.png" alt="" style="width: 40px;margin: auto;position: absolute;z-index: 100;top: -20px;left: 50%;">
+       <div class="card card-just-text" data-background="color" data-color="orange" data-radius="none">
+                <p style="float: right;width: 90px;margin: 10px 10px auto;text-align: center;background-color: ghostwhite;opacity: 0.6;">${tasks[i].priority}</p>
+                <div class="content">
+                    <h6 class="category"><img src="reading.png" width="25px"><i>${tasks[i].task_name}</i></h6>
+                    <h4 class="title"><a href="#"><b>${tasks[i].title}</b></a></h4>
+                    <p class="description">${tasks[i].description}</p>
+                </div>
+                    <div style="display: grid;gap:5px">
+                    <div style="display: flex;justify-content: space-evenly;"><label>Start at : </label> <div> ${formatDateTime(tasks[i].start_time)}</div></div>
+                    <div style="display: flex;justify-content: space-evenly;"> <label>End at : </label> <div> ${formatDateTime(tasks[i].deadline_time)}</div></div>
+                </div>
+                <br>
+                <div style="display: flex;justify-content: space-between;padding: 10px;width: 95%;margin: auto;">
+                    <div style="display: flex;justify-content: space-evenly;"><p>Create at : </p> <div> 7:10AM</div></div>
+                    <div style="display: flex;justify-content: space-evenly;gap: 15px;"> 
+                        <a href="ToDoUpdate.html?id=${tasks[i].task_id}" style="color:  rgb(10, 89, 145);"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a onclick="deleteTask(${tasks[i].task_id})" style="color: rgb(153, 33, 33);"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                </div>
+            </div> <!-- end card -->
+        </div>
+    </div>
+                        `);
+
+        }
+
+        // important
+             else if(tasks[i].task_name==="important"){
+
+              $('.row').append(`
+                         <div class="col-md-4 col-sm-6 content-card important_card">
+        <div class="card-big-shadow">
+            <img src="pin.png" alt="" style="width: 40px;margin: auto;position: absolute;z-index: 100;top: -20px;left: 50%;">
+       <div class="card card-just-text" data-background="color" data-color="gold" data-radius="none">
+                <p style="float: right;width: 90px;margin: 10px 10px auto;text-align: center;background-color: ghostwhite;opacity: 0.6;">${tasks[i].priority}</p>
+                <div class="content">
+                    <h6 class="category"><img src="reading.png" width="25px"><i>${tasks[i].task_name}</i></h6>
+                    <h4 class="title"><a href="#"><b>${tasks[i].title}</b></a></h4>
+                    <p class="description">${tasks[i].description}</p>
+                </div>
+                    <div style="display: grid;gap:5px">
+                    <div style="display: flex;justify-content: space-evenly;"><label>Start at : </label> <div> ${formatDateTime(tasks[i].start_time)}</div></div>
+                    <div style="display: flex;justify-content: space-evenly;"> <label>End at : </label> <div> ${formatDateTime(tasks[i].deadline_time)}</div></div>
+                </div>
+                <br>
+                <div style="display: flex;justify-content: space-between;padding: 10px;width: 95%;margin: auto;">
+                    <div style="display: flex;justify-content: space-evenly;"><p>Create at : </p> <div> 7:10AM</div></div>
+                    <div style="display: flex;justify-content: space-evenly;gap: 15px;"> 
+                        <a href="ToDoUpdate.html?id=${tasks[i].task_id}" style="color:  rgb(10, 89, 145);"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a onclick="deleteTask(${tasks[i].task_id})" style="color: rgb(153, 33, 33);"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                </div>
+            </div> <!-- end card -->
+        </div>
+    </div>
+                        `);
+
+        }
+
+
+        // urgent
+             else if(tasks[i].task_name==="urgent"){
+              $('.row').append(`
+                         <div class="col-md-4 col-sm-6 content-card urgent_card" >
+        <div class="card-big-shadow">
+            <img src="pin.png" alt="" style="width: 40px;margin: auto;position: absolute;z-index: 100;top: -20px;left: 50%;">
+          <div class="card card-just-text" data-background="color" data-color="red" data-radius="none">
+                <p style="float: right;width: 90px;margin: 10px 10px auto;text-align: center;background-color: ghostwhite;opacity: 0.6;">${tasks[i].priority}</p>
+                <div class="content">
+                    <h6 class="category"><img src="reading.png" width="25px"><i>${tasks[i].task_name}</i></h6>
+                    <h4 class="title"><a href="#"><b>${tasks[i].title}</b></a></h4>
+                    <p class="description">${tasks[i].description}</p>
+                </div>
+                    <div style="display: grid;gap:5px">
+                    <div style="display: flex;justify-content: space-evenly;"><label>Start at : </label> <div> ${formatDateTime(tasks[i].start_time)}</div></div>
+                    <div style="display: flex;justify-content: space-evenly;"> <label>End at : </label> <div> ${formatDateTime(tasks[i].deadline_time)}</div></div>
+                </div>
+                <br>
+                <div style="display: flex;justify-content: space-between;padding: 10px;width: 95%;margin: auto;">
+                    <div style="display: flex;justify-content: space-evenly;"><p>Create at : </p> <div> 7:10AM</div></div>
+                    <div style="display: flex;justify-content: space-evenly;gap: 15px;"> 
+                        <a href="ToDoUpdate.html?id=${tasks[i].task_id}" style="color:  rgb(10, 89, 145);"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a onclick="deleteTask(${tasks[i].task_id})" style="color: rgb(153, 33, 33);"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                </div>
+            </div> <!-- end card -->
+        </div>
+    </div>
+                        `);
+
+        }
+
+        // social
+
+             else if(tasks[i].task_name ==="social"){
+
+              $('.row').append(`
+                         <div class="col-md-4 col-sm-6 content-card social_card" >
+        <div class="card-big-shadow">
+            <img src="pin.png" alt="" style="width: 40px;margin: auto;position: absolute;z-index: 100;top: -20px;left: 50%;">
+       <div class="card card-just-text" data-background="color" data-color="brown" data-radius="none">
+                <p style="float: right;width: 90px;margin: 10px 10px auto;text-align: center;background-color: ghostwhite;opacity: 0.6;">${tasks[i].priority}</p>
+                <div class="content">
+                    <h6 class="category"><img src="reading.png" width="25px"><i>${tasks[i].task_name}</i></h6>
+                    <h4 class="title"><a href="#"><b>${tasks[i].title}</b></a></h4>
+                    <p class="description">${tasks[i].description}</p>
+                </div>
+                    <div style="display: grid;gap:5px">
+                    <div style="display: flex;justify-content: space-evenly;"><label>Start at : </label> <div> ${formatDateTime(tasks[i].start_time)}</div></div>
+                    <div style="display: flex;justify-content: space-evenly;"> <label>End at : </label> <div> ${formatDateTime(tasks[i].deadline_time)}</div></div>
+                </div>
+                <br>
+                <div style="display: flex;justify-content: space-between;padding: 10px;width: 95%;margin: auto;">
+                    <div style="display: flex;justify-content: space-evenly;"><p>Create at : </p> <div> 7:10AM</div></div>
+                    <div style="display: flex;justify-content: space-evenly;gap: 15px;"> 
+                        <a href="ToDoUpdate.html?id=${tasks[i].task_id}" style="color:  rgb(10, 89, 145);"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a onclick="deleteTask(${tasks[i].task_id})" style="color: rgb(153, 33, 33);"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                </div>
+            </div> <!-- end card -->
+        </div>
+    </div>
+                        `);
+
+        }
+
+        // entertaintmnet
+             else {
+
+              $('.row').append(`
+                         <div class="col-md-4 col-sm-6 content-card entertainment_card" >
+        <div class="card-big-shadow">
+            <img src="pin.png" alt="" style="width: 40px;margin: auto;position: absolute;z-index: 100;top: -20px;left: 50%;">
+       <div class="card card-just-text" data-background="color" data-color="purple" data-radius="none">
+                <p style="float: right;width: 90px;margin: 10px 10px auto;text-align: center;background-color: ghostwhite;opacity: 0.6;">${tasks[i].priority}</p>
+                <div class="content">
+                    <h6 class="category"><img src="reading.png" width="25px"><i>${tasks[i].task_name}</i></h6>
+                    <h4 class="title"><a href="#"><b>${tasks[i].title}</b></a></h4>
+                    <p class="description">${tasks[i].description}</p>
+                </div>
+                   <div style="display: grid;gap:5px">
+                    <div style="display: flex;justify-content: space-evenly;"><label>Start at : </label> <div> ${formatDateTime(tasks[i].start_time)}</div></div>
+                    <div style="display: flex;justify-content: space-evenly;"> <label>End at : </label> <div> ${formatDateTime(tasks[i].deadline_time)}</div></div>
+                </div>
+                <br>
+                <div style="display: flex;justify-content: space-between;padding: 10px;width: 95%;margin: auto;">
+                    <div style="display: flex;justify-content: space-evenly;"><p>Create at : </p> <div> 7:10AM</div></div>
+                    <div style="display: flex;justify-content: space-evenly;gap: 15px;"> 
+                        <a href="ToDoUpdate.html?id=${tasks[i].task_id}" style="color:  rgb(10, 89, 145);"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a onclick="deleteTask(${tasks[i].task_id})" style="color: rgb(153, 33, 33);"><i class="fa-solid fa-trash"></i></a>
+                    </div>
+                </div>
+            </div> <!-- end card -->
+        </div>
+    </div>
+                        `);
+
+        }
+                  //
+                     
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Error loading products: ' + error);
+                }
+            });
+        }
+        //
+
+        
+    }
+);
+
+        function deleteTask(id){
+            $.ajax({                                                                                                            
+                url: 'http://localhost:3000/ToDo/readwell/delete/' + id,
+                method: 'DELETE',
+                success: function(response) {
+                    console.log(response);
+                    window.location.reload();
+                },
+                error: function(xhr, status, error) {
+                    alert('Error deleting Task: ' + error);
+                }
+            });         
+
+         }
+
+         
+
+
+
+
+
+         const createMember = async (req, res) => {
+    try {
+        const { username, email, password, timezone } = req.body;
+
+        if (!username || !email || !password) {
+            return res.status(400).json({ message: "Missing parameters", Result: "False" });
+        }
+
+        const hash = await bcrypt.hash(password, 10);
+
+        const [result] = await db.query(
+            "INSERT INTO users (username, email, password, timezone) VALUES (?, ?, ?, ?)",
+            [username, email, hash, timezone || 'UTC']
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(500).json({ message: "Error creating member", Result: "False" });
+        }
+
+        const token = createToken({ user_id: result.insertId });
+
+        res.status(201).json({
+            message: "Created successfully, Please Login",
+            token,
+            user_id: result.insertId,
+            Result: "True"
+        });
+
+    } catch (error) {
+        console.error("Error in createMember:", error);
+        res.status(500).json({ message: "Internal server error", Result: "False" });
+    }
+};
+
+const loginMember = async (req, res) => {
+    try {
+        const { email, password, timezone } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({ message: "Missing parameters", Result: "False" });
+        }
+
+        const [users] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+        if (users.length === 0) {
+            return res.status(404).json({ message: "No user found", Result: "False" });
+        }
+
+        const user = users[0];
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: "Login unsuccessful: Invalid password", Result: "False" });
+        }
+
+        if (timezone) {
+            await db.query("UPDATE users SET timezone = ? WHERE user_id = ?", [timezone, user.user_id]);
+        }
+
+        const token = createToken({ user_id: user.user_id });
+
+        res.json({
+            message: "Login successful",
+            token,
+            user_id: user.user_id,
+            username: user.username,
+            Result: "True"
+        });
+
+    } catch (error) {
+        console.error("Error in loginMember:", error);
+        res.status(500).json({ message: "Internal server error", Result: "False" });
+    }
+};
