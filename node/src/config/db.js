@@ -7,7 +7,7 @@ require('dotenv').config();
 const dbconfig = mysql.createPool(
     {
         host: "srv1777.hstgr.io", //localhost
-        user:"Meanleap_Ha", //root
+        user:"u523916255_Meanleap_Ha", //root
         password: 'Leap2005333', //password
         database:"u523916255_remindme", //database
         waitForConnections: true, //wait for connections
