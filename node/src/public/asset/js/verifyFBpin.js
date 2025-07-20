@@ -15,7 +15,7 @@
     }
 
     try {
-      const res = await fetch('http://localhost:3000/ToDo/remindme/verifyResetPin', {
+      const res = await fetch('https://remindwho.onrender.com/ToDo/remindme/verifyResetPin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, pin }),
@@ -41,7 +41,7 @@
 
   document.getElementById('resendPin').addEventListener('click', async () => {
     try {
-      const res = await fetch('http://localhost:3000/ToDo/remindme/resendresetpin', {
+      const res = await fetch('https://remindwho.onrender.com/ToDo/remindme/resendresetpin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),

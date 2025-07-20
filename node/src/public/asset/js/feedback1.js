@@ -24,7 +24,7 @@ if (toastTrigger2) {
   }
      async function displayName() {
     try {
-      const response = await fetch('http://localhost:3000/ToDo/remindme/name', {
+      const response = await fetch('https://remindwho.onrender.com/ToDo/remindme/name', {
         method: 'GET',
         headers: {
           'Authorization': 'Bearer ' + localStorage.getItem('token')  // or however you're storing the JWT

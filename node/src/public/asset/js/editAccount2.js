@@ -17,7 +17,7 @@
       };
 
       $.ajax({
-        url: `http://localhost:3000/ToDo/remindme/updateAccount`,
+        url: `https://remindwho.onrender.com/ToDo/remindme/updateAccount`,
         method: 'PUT',
         headers: { 'Authorization': 'Bearer ' + token },
         contentType: 'application/json',
@@ -25,7 +25,7 @@
         success: function (response) {
           $('msg').text(response.message);
           // alert(response.message);
-           location.href = 'http://127.0.0.1:5501/account.html';
+           location.href = 'https://remindwho.onrender.com/account.html';
         },
         error: function(xhr) {
           const message = xhr.responseJSON?.message || xhr.responseText || "Failed to update account.";

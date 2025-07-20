@@ -11,7 +11,7 @@
             };
 
             $.ajax({
-                url: 'http://localhost:3000/ToDo/remindme/report',
+                url: 'https://remindwho.onrender.com/ToDo/remindme/report',
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('token')

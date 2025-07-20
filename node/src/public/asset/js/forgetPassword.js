@@ -8,7 +8,7 @@
     }
 
     try {
-      const res = await fetch('http://localhost:3000/ToDo/remindme/requestPasswordReset', {
+      const res = await fetch('https://remindwho.onrender.com/ToDo/remindme/requestPasswordReset', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),

@@ -16,7 +16,7 @@ $('#changeBtn').on('click', function () {
       }
 
       $.ajax({
-        url: 'http://localhost:3000/ToDo/remindme/changePassword',
+        url: 'https://remindwho.onrender.com/ToDo/remindme/changePassword',
         method: 'PUT',
         contentType: 'application/json',
         headers: {
