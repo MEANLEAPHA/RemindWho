@@ -11,14 +11,14 @@
             timezone: userTimezone  // add timezone here
         };
         $.ajax({
-            url: 'http://localhost:3000/ToDo/remindme/login',
+            url: 'http://remindwho.onrender.com/ToDo/remindme/login',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(member),
             success: function(response) {
                 $('#msg').text(response.message).css('color', 'green');
                 localStorage.setItem('token', response.token);
-               location.href = 'http://127.0.0.1:5501/index.html';
+               location.href = 'http://remindwho.onrender.com/index.html';
             },
             // error: function(xhr, status, error) {
             //     console.error("AJAX Error:", xhr.responseText);

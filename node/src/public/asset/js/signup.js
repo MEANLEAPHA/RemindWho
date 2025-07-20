@@ -33,14 +33,14 @@
         };
 
         $.ajax({
-          url: 'http://localhost:3000/ToDo/remindme/register',
+          url: 'http://remindwho.onrender.com/ToDo/remindme/register',
           method: 'POST',
           contentType: 'application/json',
           data: JSON.stringify(member),
           success: function (response) {
             $('#msg').text(response.message).css('color', 'green');
             localStorage.setItem('verify_token', response.token);
-            location.href = 'http://127.0.0.1:5501/verify.html';
+            location.href = 'http://remindwho.onrender.com/verify.html';
             // Optionally clear the form or redirect here
           },
           // error: function (xhr, status, error) {
