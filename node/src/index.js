@@ -14,7 +14,7 @@ const { ToDo } = require('./router/toDo');
 ToDo(app);
 
 // Start Server
-const port = 3306;
+const port = 3000;
 app.listen(port, () => {
     console.log(`🚀 Server running at http://localhost:${port}`);
 });
