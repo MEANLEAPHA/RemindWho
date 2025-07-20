@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Import Routes
-const { ToDo } = require('./src/router/toDo');
+const { ToDo } = require('./router/toDo');
 
 // Initialize Routes
 ToDo(app);
