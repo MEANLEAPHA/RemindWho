@@ -1,11 +1,12 @@
 // Import mysql
+const e = require('express');
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
 // Create a connection pool
 const dbconfig = mysql.createPool(
     {
-        host: "127.0.0.1", //localhost
+        host: env.DB_HOST, //localhost
         user:"Meanleap_Ha", //root
         password: 'Leap2005333', //password
         database:"u523916255_remindme", //database
