@@ -258,9 +258,14 @@ const loginMember = async (req, res) => {
 
         if (timezone) {
             await db.query("UPDATE users SET timezone = ? WHERE user_id = ?", [timezone, user.user_id]);
+            user.timezone = timezone; // Ensure updated timezone is included
         }
 
-        const token = createToken({ user_id: user.user_id, email: user.email });
+        const token = createToken({
+            user_id: user.user_id,
+            email: user.email,
+            timezone: user.timezone || 'UTC'
+        });
 
 
         res.json({
@@ -268,6 +273,7 @@ const loginMember = async (req, res) => {
             token,
             user_id: user.user_id,
             username: user.username,
+            timezone: user.timezone || 'UTC',
             Result: "True"
         });
 
@@ -311,7 +317,12 @@ const createMember = async (req, res) => {
     // Optionally create a token here for verification page access (e.g. with user_id)
     // Example:
     // You need the new user's email as well — since you inserted it, you have it in req.body.email
-const token = createToken({ user_id: result.insertId, email });
+      const token = createToken({
+        user_id: result.insertId,
+        email,
+        timezone: timezone || 'UTC'
+      });
+
 
 
     res.status(201).json({
