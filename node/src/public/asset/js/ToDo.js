@@ -3,7 +3,7 @@ $(document).ready(function(){
 
     function LoadTask() {
         $.ajax({
-            url: 'http://localhost:3000/ToDo/remindme/displayAll',
+            url: 'https://remindwho.onrender.com/ToDo/remindme/displayAll',
             method: 'GET',
             headers: {
             'Authorization': 'Bearer ' + localStorage.getItem('token')  // ← Token added here
