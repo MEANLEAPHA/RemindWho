@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    const userTimezone = localStorage.getItem('user_timezone'); // user timezone from storage
+ 
 
     $('#task-form').on('submit', function(e) {
         e.preventDefault();
@@ -17,7 +17,6 @@ $(document).ready(function() {
             priority: $('#priority').val(),
             start_time: localToUTC($('#startAt').val()),
             deadline_time: localToUTC($('#EndAt').val()),
-            timezone: userTimezone,
             start_status: $('#startStatus').is(':checked') ? 'active' : 'inactive',
             deadline_status: $('#deadlineStatus').is(':checked') ? 'active' : 'inactive',
         };

@@ -1,15 +1,18 @@
-  function convertToUTC(datetimeStr) {
-        const localDate = new Date(datetimeStr);
-        return new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000).toISOString();
-    }
+//   function convertToUTC(datetimeStr) {
+//         const localDate = new Date(datetimeStr);
+//         return new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000).toISOString();
+//     }
   
   $(document).ready(function() {
+   // user timezone from storage
         $('#task-form').on('submit', function(e) {
             e.preventDefault();
 
             
-            const startTimeUTC = convertToUTC($('#startAt').val());
-            const endTimeUTC = convertToUTC($('#EndAt').val());
+         
+        function localToUTC(datetimeLocalString) {
+            return new Date(datetimeLocalString).toISOString();
+        }
 
             const task = {
                 title: $('#NoteTitle').val(),
@@ -18,8 +21,8 @@
                 description: $('#description').val(),
                 task_name: $('#cate').val(),
                 priority: $('#priority').val(),
-                start_time: startTimeUTC,
-                deadline_time: endTimeUTC,
+                start_time: localToUTC($('#startAt').val()),
+                deadline_time: localToUTC($('#EndAt').val()),
                 start_status: $('#startStatus').is(':checked') ? 'active' : 'inactive',
                 deadline_status: $('#deadlineStatus').is(':checked') ? 'active' : 'inactive',
             };

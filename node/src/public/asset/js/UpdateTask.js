@@ -1,7 +1,7 @@
 $(document).ready(function () {
     const taskId = new URLSearchParams(window.location.search).get('id');
     const token = localStorage.getItem('token');
-    const userTimezone = localStorage.getItem('user_timezone'); // user timezone from storage
+
 
     if (!token) {
       alert('Please log in first.');
@@ -57,7 +57,6 @@ $(document).ready(function () {
         priority: $('#priority').val(),
         start_time: localToUTC($('#startAt').val()),
         deadline_time: localToUTC($('#EndAt').val()),
-        timezone: userTimezone,
         start_status: $('#startStatus').is(':checked') ? 'active' : 'inactive',
         deadline_status: $('#deadlineStatus').is(':checked') ? 'active' : 'inactive',
       };
