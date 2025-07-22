@@ -41,17 +41,26 @@ $(document).ready(function(){
     }
 
     // Updated formatDateTime to respect user's local timezone and show TZ abbreviation
+    // function formatDateTime(dateString) {
+    //     const date = new Date(dateString);
+    //     return date.toLocaleString(undefined, {
+    //         year: 'numeric',
+    //         month: 'short',
+    //         day: 'numeric',
+    //         hour: '2-digit',
+    //         minute: '2-digit',
+    //         timeZoneName: 'short'
+    //     });
+    // }
+
     function formatDateTime(dateString) {
         const date = new Date(dateString);
-        return date.toLocaleString(undefined, {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            timeZoneName: 'short'
-        });
-    }
+        return date.getFullYear() + '-' +
+                String(date.getMonth() + 1).padStart(2, '0') + '-' +
+                String(date.getDate()).padStart(2, '0') + ' ' +
+                String(date.getHours()).padStart(2, '0') + ':' +
+                String(date.getMinutes()).padStart(2, '0');
+        }
 
     function createCard(task, style) {
         const alertStatus1 = (task.start_status === 'active') ? 'on' : 'off';
