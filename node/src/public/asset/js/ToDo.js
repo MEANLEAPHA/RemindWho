@@ -53,14 +53,31 @@ $(document).ready(function(){
     //     });
     // }
 
+    // function formatDateTime(dateString) {
+    //     const date = new Date(dateString);
+    //     return date.getFullYear() + '-' +
+    //             String(date.getMonth() + 1).padStart(2, '0') + '-' +
+    //             String(date.getDate()).padStart(2, '0') + ' ' +
+    //             String(date.getHours()).padStart(2, '0') + ':' +
+    //             String(date.getMinutes()).padStart(2, '0');
+    //     }
     function formatDateTime(dateString) {
-        const date = new Date(dateString);
-        return date.getFullYear() + '-' +
-                String(date.getMonth() + 1).padStart(2, '0') + '-' +
-                String(date.getDate()).padStart(2, '0') + ' ' +
-                String(date.getHours()).padStart(2, '0') + ':' +
-                String(date.getMinutes()).padStart(2, '0');
-        }
+    const date = new Date(dateString); // Converts to local time
+    let hours = date.getHours();       // Gets local hours
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+
+    return (
+        date.getFullYear() + '-' +
+        String(date.getMonth() + 1).padStart(2, '0') + '-' +
+        String(date.getDate()).padStart(2, '0') + ' ' +
+        String(hours).padStart(2, '0') + ':' + minutes + ' ' + ampm
+    );
+}
+
 
     function createCard(task, style) {
         const alertStatus1 = (task.start_status === 'active') ? 'on' : 'off';
