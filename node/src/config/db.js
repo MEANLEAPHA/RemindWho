@@ -6,10 +6,10 @@ require('dotenv').config();
 // Create a connection pool
 const dbconfig = mysql.createPool(
     {
-        host: "srv1777.hstgr.io", //localhost
-        user:"u523916255_Meanleap_Ha", //root
-        password: 'Leap2005333', //password
-        database:"u523916255_remindme", //database
+        host: "srv1656.hstgr.io", //localhost
+        user:"u859618886_remindmeAdmin", //root
+        password: 'Remindme$$333company', //password
+        database:"u859618886_remindmeDB", //database
         waitForConnections: true, //wait for connections
         connectionLimit: 10, //max connections
         port: 3306, //port
