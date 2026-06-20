@@ -83,86 +83,26 @@
 //         console.error('❌ Error processing task alerts:', error);
 //     }
 // });
+// scheduler.js - Complete working solution in one file
+
 const { DateTime } = require('luxon');
 const schedule = require('node-schedule');
-const { sendEmail } = require('../util/email');
-
+const nodemailer = require('nodemailer');
 const db = require('../config/db');
 
-// Run every minute
-schedule.scheduleJob('* * * * *', async () => {
-    try {
-        const result = await db.query(`
-            SELECT t.*, u.timezone 
-            FROM todo_tasks t 
-            JOIN users u ON t.member_id = u.user_id
-        `);
-
-        const tasks = result.rows;
-        const nowUtc = DateTime.utc();
-
-        for (const task of tasks) {
-            const taskStart = DateTime.fromJSDate(new Date(task.start_time), { zone: 'utc' });
-            const taskDeadline = DateTime.fromJSDate(new Date(task.deadline_time), { zone: 'utc' });
-
-            const userNow = nowUtc.setZone(task.timezone || 'UTC');
-
-            let recipientEmail;
-            let senderEmail = task.member_email;
-            const isFriend = task.towho === 'Friend';
-            recipientEmail = isFriend ? task.to_email : senderEmail;
-
-            // START TIME ALERT
-            if (
-                task.start_status === 'active' &&
-                !task.start_alert_sent &&
-                userNow >= taskStart.setZone(task.timezone)
-            ) {
-                const htmlContent = generateTaskEmailHTML(task, isFriend, senderEmail, 'start');
-                const textContent = generatePlainTextFallback(task, isFriend, senderEmail, 'start');
-                
-                await sendEmail(
-                    recipientEmail,
-                    `Task Started - ${task.title}`,
-                    htmlContent,
-                    textContent
-                );
-                
-                await db.query(
-                    "UPDATE todo_tasks SET start_alert_sent = TRUE WHERE task_id = $1",
-                    [task.task_id]
-                );
-            }
-
-            // DEADLINE TIME ALERT
-            if (
-                task.deadline_status === 'active' &&
-                !task.deadline_alert_sent &&
-                userNow >= taskDeadline.setZone(task.timezone)
-            ) {
-                const htmlContent = generateTaskEmailHTML(task, isFriend, senderEmail, 'deadline');
-                const textContent = generatePlainTextFallback(task, isFriend, senderEmail, 'deadline');
-                
-                await sendEmail(
-                    recipientEmail,
-                    `Task Deadline Reached - ${task.title}`,
-                    htmlContent,
-                    textContent
-                );
-                
-                await db.query(
-                    "UPDATE todo_tasks SET deadline_alert_sent = TRUE WHERE task_id = $1",
-                    [task.task_id]
-                );
-            }
-        }
-    } catch (error) {
-        console.error('❌ Error processing task alerts:', error);
-    }
+// Email transporter configuration
+const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.SMTP_PORT) || 587,
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+    },
 });
 
-
-const generateTaskEmailHTML = (task, isFriend, senderEmail, alertType) => {
+// Generate beautiful HTML email
+const generateEmailHTML = (task, isFriend, senderEmail, alertType) => {
     const isStartAlert = alertType === 'start';
     const statusText = isStartAlert ? 'Started' : 'Deadline Reached';
     const statusIcon = isStartAlert ? 'fa-play-circle' : 'fa-hourglass-end';
@@ -177,7 +117,7 @@ const generateTaskEmailHTML = (task, isFriend, senderEmail, alertType) => {
         : 'Just a quick reminder that your task has now reached its deadline';
     
     const actionMessage = isStartAlert
-        ? 'Let\'s make the most of your time and tackle this with focus. Now\'s a great moment to plan ahead or set a timer for deep work mode'
+        ? 'Make the most of your time and tackle this with focus. Plan ahead or set a timer for deep work mode'
         : 'If you\'ve already completed it—amazing! If not, there\'s no better time than now to finish strong';
     
     const priorityIcon = task.priority.toLowerCase() === 'high' ? 'fa-exclamation-triangle' :
@@ -186,262 +126,140 @@ const generateTaskEmailHTML = (task, isFriend, senderEmail, alertType) => {
                           task.priority.toLowerCase() === 'medium' ? '#f0b34b' : '#4caf50';
     
     const friendNote = isFriend 
-        ? `<div style="background: #ecf3fa; border-radius: 18px; padding: 16px 22px; margin: 22px 0 12px 0; display: flex; align-items: center; gap: 12px; border-left: 4px solid #3b8cbf;">
-            <i class="fas fa-user-friends" style="color: #2d7fb9; font-size: 18px; width: 28px; text-align: center;"></i>
-            <span style="color: #1d3850; font-size: 15px;">
-                <i class="fas fa-envelope" style="margin-right: 6px; color: #2d7fb9;"></i> 
+        ? `<div style="background:#ecf3fa;border-radius:18px;padding:16px 22px;margin:22px 0 12px 0;display:flex;align-items:center;gap:12px;border-left:4px solid #3b8cbf;">
+            <span style="color:#1d3850;font-size:15px;">
+                <span style="color:#2d7fb9;font-size:18px;margin-right:8px;">👤</span> 
                 This reminder was sent to you by your friend: <strong>${senderEmail}</strong>
             </span>
         </div>`
         : '';
 
-    const startTime = DateTime.fromJSDate(new Date(task.start_time)).toFormat('yyyy-MM-dd HH:mm');
-    const deadlineTime = DateTime.fromJSDate(new Date(task.deadline_time)).toFormat('yyyy-MM-dd HH:mm');
+    const startTime = new Date(task.start_time).toLocaleString();
+    const deadlineTime = new Date(task.deadline_time).toLocaleString();
 
     return `
     <!DOCTYPE html>
-    <html lang="en">
+    <html>
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body {
-                background: #f4f7fc;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-                line-height: 1.6;
-                padding: 30px 16px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                min-height: 100vh;
-                margin: 0;
+            * { margin:0; padding:0; box-sizing:border-box; }
+            body { 
+                background:#f4f7fc; 
+                font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                padding:20px;
             }
-            .email-wrapper {
-                max-width: 600px;
-                width: 100%;
-                background-color: #ffffff;
-                border-radius: 28px;
-                box-shadow: 0 20px 50px rgba(0, 20, 40, 0.08), 0 8px 20px rgba(0, 0, 0, 0.02);
-                overflow: hidden;
-            }
-            .email-header {
-                background: linear-gradient(145deg, #1a2a3a, #0f1a26);
-                padding: 36px 32px 28px 32px;
-                color: #fff;
-                border-bottom: 4px solid ${statusColor};
-            }
-            .email-header h1 {
-                font-weight: 600;
-                font-size: 24px;
-                letter-spacing: -0.3px;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                margin-bottom: 6px;
-            }
-            .email-header h1 i { color: #6ab0e6; font-size: 28px; }
-            .email-header .task-title {
-                background: rgba(255, 255, 255, 0.07);
-                padding: 8px 20px 8px 18px;
-                border-radius: 50px;
-                display: inline-block;
-                font-size: 18px;
-                font-weight: 500;
-                margin-top: 8px;
-                border-left: 3px solid ${statusColor};
-                word-break: break-word;
-            }
-            .email-header .task-title i { margin-right: 10px; color: #9ac7f0; font-size: 16px; }
-            .email-body { padding: 32px 32px 24px 32px; background: #ffffff; }
-            .status-badge {
-                display: inline-block;
-                background: #eef4fa;
-                padding: 8px 18px 8px 16px;
-                border-radius: 40px;
-                font-size: 14px;
-                font-weight: 600;
-                color: #1a3852;
-                margin-bottom: 20px;
-            }
-            .status-badge i { margin-right: 10px; color: ${statusColor}; }
-            .greeting {
-                font-size: 17px;
-                font-weight: 500;
-                color: #1c2e3f;
-                margin-bottom: 12px;
-            }
-            .greeting i { color: #3b8cbf; margin-right: 8px; }
-            .message-block {
-                background: #f8fafd;
-                padding: 22px 24px;
-                border-radius: 20px;
-                margin: 18px 0 24px 0;
-                border: 1px solid #e9edf2;
-            }
-            .message-block p {
-                font-size: 16px;
-                color: #1d2c3b;
-                margin-bottom: 12px;
-            }
-            .message-block .highlight {
-                background: #e1ebf5;
-                padding: 2px 8px;
-                border-radius: 8px;
-                font-weight: 500;
-                color: #13547a;
-            }
-            .message-block .action-box {
-                background: #e3edf7;
-                padding: 8px 14px;
-                border-radius: 40px;
-                display: inline-block;
-                margin-top: 12px;
-            }
-            .message-block .action-box i { margin-right: 8px; color: #1f6390; }
-            .meta-grid {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 12px;
-                margin: 20px 0 18px 0;
-                padding: 16px 0 8px 0;
-                border-top: 1px solid #e6ecf3;
-            }
-            .meta-item {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                font-size: 14px;
-                color: #1f3a4f;
-                background: #f5f9ff;
-                padding: 6px 16px 6px 12px;
-                border-radius: 40px;
-            }
-            .meta-item i { color: #3b8cbf; width: 18px; font-size: 14px; text-align: center; }
-            .meta-item strong { font-weight: 600; color: #0e2638; margin-right: 4px; }
-            .closing {
-                margin-top: 28px;
-                font-size: 16px;
-                color: #1f3446;
-                border-top: 1px dashed #d4dfea;
-                padding-top: 24px;
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .closing .signature { display: flex; align-items: center; gap: 8px; }
-            .closing .signature i { color: #3b8cbf; font-size: 18px; }
-            .closing .heart { color: #b3435a; margin-right: 6px; }
-            .email-footer {
-                background: #f4f8fe;
-                padding: 18px 32px;
-                font-size: 13px;
-                color: #4f657b;
-                border-top: 1px solid #dfe8f2;
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .email-footer i { margin-right: 6px; color: #6d8aa8; }
-            .email-footer a {
-                color: #1f5277;
-                text-decoration: none;
-                font-weight: 500;
-                border-bottom: 1px dotted #b6cee5;
-            }
-            @media (max-width: 480px) {
-                .email-header { padding: 28px 20px 22px 20px; }
-                .email-header h1 { font-size: 20px; flex-wrap: wrap; }
-                .email-body { padding: 24px 20px 20px 20px; }
-                .message-block { padding: 18px 16px; }
-                .meta-grid { gap: 8px; }
-                .meta-item { font-size: 13px; padding: 4px 12px 4px 8px; }
-                .closing { flex-direction: column; align-items: flex-start; gap: 8px; }
-                .email-footer { flex-direction: column; align-items: flex-start; gap: 6px; padding: 16px 20px; }
+            .container { max-width:600px; margin:0 auto; background:#ffffff; border-radius:24px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.08); }
+            .header { background:linear-gradient(135deg, #1a2a3a, #0f1a26); padding:32px 30px 24px; color:#fff; border-bottom:4px solid ${statusColor}; }
+            .header h1 { font-size:22px; font-weight:600; display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+            .header h1 span { background:rgba(255,255,255,0.1); padding:4px 12px; border-radius:20px; font-size:14px; font-weight:400; }
+            .task-title { background:rgba(255,255,255,0.08); padding:8px 18px; border-radius:30px; display:inline-block; border-left:3px solid ${statusColor}; margin-top:6px; }
+            .task-title i { margin-right:8px; color:#9ac7f0; }
+            .body { padding:30px 30px 20px; }
+            .badge { display:inline-block; background:#eef4fa; padding:6px 16px; border-radius:30px; font-size:13px; font-weight:600; color:#1a3852; margin-bottom:16px; }
+            .badge i { margin-right:8px; color:${statusColor}; }
+            .greeting { font-size:16px; font-weight:500; color:#1c2e3f; margin-bottom:12px; }
+            .greeting i { color:#3b8cbf; margin-right:6px; }
+            .message-box { background:#f8fafd; padding:20px 22px; border-radius:16px; border:1px solid #e9edf2; margin:16px 0 20px; }
+            .message-box p { font-size:15px; color:#1d2c3b; margin-bottom:10px; }
+            .highlight { background:#e1ebf5; padding:2px 8px; border-radius:6px; font-weight:500; color:#13547a; }
+            .action-box { background:#e3edf7; padding:8px 14px; border-radius:30px; display:inline-block; margin-top:10px; font-size:14px; }
+            .action-box i { margin-right:8px; color:#1f6390; }
+            .meta-grid { display:flex; flex-wrap:wrap; gap:10px; margin:20px 0 16px; padding-top:16px; border-top:1px solid #e6ecf3; }
+            .meta-item { display:flex; align-items:center; gap:8px; font-size:13px; color:#1f3a4f; background:#f5f9ff; padding:4px 14px 4px 10px; border-radius:30px; }
+            .meta-item i { color:#3b8cbf; width:16px; font-size:13px; }
+            .meta-item strong { font-weight:600; color:#0e2638; margin-right:2px; }
+            .closing { margin-top:24px; padding-top:20px; border-top:1px dashed #d4dfea; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+            .closing .signature { display:flex; align-items:center; gap:8px; color:#1f3446; font-size:15px; }
+            .closing .signature i { color:#3b8cbf; }
+            .footer { background:#f4f8fe; padding:14px 30px; font-size:12px; color:#4f657b; border-top:1px solid #dfe8f2; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+            .footer i { margin-right:4px; color:#6d8aa8; }
+            .footer a { color:#1f5277; text-decoration:none; font-weight:500; }
+            @media (max-width:480px) {
+                .header { padding:24px 18px 18px; }
+                .header h1 { font-size:19px; }
+                .body { padding:20px 18px 16px; }
+                .message-box { padding:16px; }
+                .meta-grid { gap:6px; }
+                .meta-item { font-size:12px; padding:3px 10px 3px 8px; }
+                .closing { flex-direction:column; align-items:flex-start; }
+                .footer { flex-direction:column; align-items:flex-start; padding:12px 18px; }
             }
         </style>
     </head>
     <body>
-        <div class="email-wrapper">
-            <div class="email-header">
+        <div class="container">
+            <div class="header">
                 <h1>
-                    <i class="fas fa-tasks"></i> Task RemindeMe
+                    <span>📋</span> Task RemindeMe
+                    <span style="font-size:12px;background:rgba(255,255,255,0.15);padding:2px 12px;border-radius:20px;font-weight:400;">v2</span>
                 </h1>
                 <div class="task-title">
-                    <i class="fas fa-pen"></i> ${task.title}
+                    <i>📝</i> ${task.title}
                 </div>
             </div>
-
-            <div class="email-body">
-                <div class="status-badge">
+            
+            <div class="body">
+                <div class="badge">
                     <i class="fas ${statusIcon}"></i> ${statusText}
                 </div>
-
+                
                 <div class="greeting">
-                    <i class="fas fa-user-astronaut"></i> Hello there,
+                    <i>👋</i> Hello there,
                 </div>
-
-                <div class="message-block">
+                
+                <div class="message-box">
                     <p>
-                        <i class="fas fa-clock" style="margin-right: 8px; color: #2d7fb9;"></i>
+                        <span style="margin-right:6px;">⏰</span>
                         <span class="highlight">"${task.title}"</span> has ${isStartAlert ? 'officially kicked off' : 'reached its deadline'}
                     </p>
                     <p>${secondLine}</p>
-                    <p style="margin-top: 12px;">
-                        <i class="fas fa-list-ul" style="margin-right: 8px; color: #2d7fb9;"></i>
+                    <p style="margin-top:10px;">
+                        <span style="margin-right:6px;">📌</span>
                         <strong>Description:</strong> ${task.description}
                     </p>
-                    <p style="margin-top: 6px;">
-                        <i class="fas ${priorityIcon}" style="margin-right: 8px; color: ${priorityColor};"></i>
+                    <p style="margin-top:4px;">
+                        <span style="margin-right:6px;">🔥</span>
                         <strong>Priority:</strong> ${task.priority}
                     </p>
                     <div class="action-box">
-                        <i class="fas fa-bolt"></i> ${actionMessage}
+                        <i>⚡</i> ${actionMessage}
                     </div>
                 </div>
-
+                
                 <div class="meta-grid">
                     <div class="meta-item">
-                        <i class="fas fa-calendar-alt"></i>
-                        <strong>Start:</strong> ${startTime}
+                        <i>📅</i> <strong>Start:</strong> ${startTime}
                     </div>
                     <div class="meta-item">
-                        <i class="fas fa-hourglass-end"></i>
-                        <strong>Deadline:</strong> ${deadlineTime}
+                        <i>⏳</i> <strong>Deadline:</strong> ${deadlineTime}
                     </div>
                     <div class="meta-item">
-                        <i class="fas fa-globe-americas"></i>
-                        <strong>Timezone:</strong> ${task.timezone || 'UTC'}
+                        <i>🌍</i> <strong>Timezone:</strong> ${task.timezone || 'UTC'}
                     </div>
                 </div>
-
+                
                 ${friendNote}
-
+                
                 <div class="closing">
                     <div class="signature">
-                        <i class="fas fa-robot"></i>
-                        <span>Your Task RemindeMe Bot</span>
+                        <i>🤖</i> Your Task RemindeMe Bot
                     </div>
                     <div>
-                        <span class="heart">❤️</span>
-                        <span style="font-weight: 400; color: #2b4b66;">You've got this!</span>
+                        <span style="color:#b3435a;margin-right:4px;">❤️</span>
+                        <span style="color:#2b4b66;">You've got this!</span>
                     </div>
                 </div>
             </div>
-
-            <div class="email-footer">
+            
+            <div class="footer">
                 <div>
-                    <i class="fas fa-chevron-circle-right"></i>
-                    Task reminder · automated
+                    <i>➡️</i> Task reminder · automated
                 </div>
                 <div>
-                    <i class="fas fa-cog"></i>
-                    <a href="#">preferences</a>
-                    <i class="fas fa-question-circle" style="margin-left: 14px;"></i>
-                    <a href="#">help</a>
+                    <i>⚙️</i> <a href="#">preferences</a>
+                    <i style="margin-left:12px;">❓</i> <a href="#">help</a>
                 </div>
             </div>
         </div>
@@ -450,13 +268,14 @@ const generateTaskEmailHTML = (task, isFriend, senderEmail, alertType) => {
     `;
 };
 
-const generatePlainTextFallback = (task, isFriend, senderEmail, alertType) => {
+// Plain text fallback
+const generatePlainText = (task, isFriend, senderEmail, alertType) => {
     const isStartAlert = alertType === 'start';
     const type = isStartAlert ? 'officially kicked off' : 'reached its deadline';
     const type1 = isStartAlert ? 'Just a friendly heads-up that your task ' : 'Just a quick reminder that your task ';
     const type2 = isStartAlert ? 'is Now in Progress' : 'has now reached its deadline';
     const type3 = isStartAlert 
-        ? 'Let\'s make the most of your time and tackle this with focus. Now\'s a great moment to plan ahead or set a timer for deep work mode'
+        ? 'Make the most of your time and tackle this with focus. Plan ahead or set a timer for deep work mode'
         : 'If you\'ve already completed it—amazing! If not, there\'s no better time than now to finish strong';
     
     let message = `"${task.title}" has ${type}\n\n${type1}"${task.title}" ${type2}.\n\nDescription: ${task.description}\n\nPriority: ${task.priority}\n\n${type3}\n\nYou've got this!\n\nBest regards, Your Task RemindeMe Bot`;
@@ -468,3 +287,112 @@ const generatePlainTextFallback = (task, isFriend, senderEmail, alertType) => {
     return message;
 };
 
+// Send email function with proper headers
+const sendEmail = async (to, subject, htmlContent, textContent) => {
+    try {
+        const mailOptions = {
+            from: process.env.SMTP_FROM || '"Task RemindeMe" <noreply@taskremindeme.com>',
+            to: to,
+            subject: subject,
+            html: htmlContent,
+            text: textContent,
+            headers: {
+                'Content-Type': 'text/html; charset=UTF-8',
+                'X-Priority': '3',
+                'X-Mailer': 'Task RemindeMe Bot'
+            }
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log(`✅ Email sent to ${to}: ${info.messageId}`);
+        return info;
+    } catch (error) {
+        console.error(`❌ Failed to send email to ${to}:`, error);
+        throw error;
+    }
+};
+
+// Main scheduler
+schedule.scheduleJob('* * * * *', async () => {
+    try {
+        console.log('🔄 Checking for task alerts...');
+        
+        const result = await db.query(`
+            SELECT t.*, u.timezone 
+            FROM todo_tasks t 
+            JOIN users u ON t.member_id = u.user_id
+        `);
+
+        const tasks = result.rows;
+        const nowUtc = DateTime.utc();
+
+        for (const task of tasks) {
+            const taskStart = DateTime.fromJSDate(new Date(task.start_time), { zone: 'utc' });
+            const taskDeadline = DateTime.fromJSDate(new Date(task.deadline_time), { zone: 'utc' });
+            const userNow = nowUtc.setZone(task.timezone || 'UTC');
+
+            let recipientEmail;
+            let senderEmail = task.member_email;
+            const isFriend = task.towho === 'Friend';
+            recipientEmail = isFriend ? task.to_email : senderEmail;
+
+            // START TIME ALERT
+            if (
+                task.start_status === 'active' &&
+                !task.start_alert_sent &&
+                userNow >= taskStart.setZone(task.timezone)
+            ) {
+                console.log(`📤 Sending start alert for: ${task.title}`);
+                
+                const htmlContent = generateEmailHTML(task, isFriend, senderEmail, 'start');
+                const textContent = generatePlainText(task, isFriend, senderEmail, 'start');
+                
+                await sendEmail(
+                    recipientEmail,
+                    `Task Started - ${task.title}`,
+                    htmlContent,
+                    textContent
+                );
+                
+                await db.query(
+                    "UPDATE todo_tasks SET start_alert_sent = TRUE WHERE task_id = $1",
+                    [task.task_id]
+                );
+                
+                console.log(`✅ Start alert sent for: ${task.title}`);
+            }
+
+            // DEADLINE TIME ALERT
+            if (
+                task.deadline_status === 'active' &&
+                !task.deadline_alert_sent &&
+                userNow >= taskDeadline.setZone(task.timezone)
+            ) {
+                console.log(`📤 Sending deadline alert for: ${task.title}`);
+                
+                const htmlContent = generateEmailHTML(task, isFriend, senderEmail, 'deadline');
+                const textContent = generatePlainText(task, isFriend, senderEmail, 'deadline');
+                
+                await sendEmail(
+                    recipientEmail,
+                    `Task Deadline Reached - ${task.title}`,
+                    htmlContent,
+                    textContent
+                );
+                
+                await db.query(
+                    "UPDATE todo_tasks SET deadline_alert_sent = TRUE WHERE task_id = $1",
+                    [task.task_id]
+                );
+                
+                console.log(`✅ Deadline alert sent for: ${task.title}`);
+            }
+        }
+        
+        console.log('✅ Alert check completed');
+    } catch (error) {
+        console.error('❌ Error processing task alerts:', error);
+    }
+});
+
+console.log('🚀 Task reminder scheduler started');
