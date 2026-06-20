@@ -26,7 +26,7 @@ schedule.scheduleJob('* * * * *', async () => {
             let senderEmail = task.member_email;
 
             const isFriend = task.toWho === 'Friend';
-            recipientEmail = isFriend ? task.toEmail : senderEmail;
+            recipientEmail = isFriend ? task.to_email : senderEmail;
 
             const formatBody = (type, type1, type2, type3) => {
                 const baseMessage = `"${task.title}" has ${type}\n\n${type1} "${task.title}" ${type2}.\n\n📌 Description: ${task.description}\n\n🔥 The Priority is ${task.priority}\n\n${type3}\n\n🎯 You’ve got this!\n\nBest regards, Your Task RemindeMe Bot 💌`;
