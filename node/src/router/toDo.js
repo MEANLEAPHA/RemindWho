@@ -21,8 +21,6 @@ const {
   updatePassword,
   resendResetPin,
   changePassword
-
-
   // validate_token
 } = require('../controller/ToDoController');
 
@@ -70,5 +68,4 @@ const ToDo = (app) => {
 
 };
 
-// Export the function to be used in index.js
 module.exports = {ToDo};

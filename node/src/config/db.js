@@ -22,16 +22,22 @@
 
 
 require('dotenv').config();
-const pg = require('pg');
+const { Pool } = require('pg');   // <-- import Pool properly
 
 const dbConfig = new Pool({
   host: "db.vfdsdzsyouzthauqukau.supabase.co", // from Supabase dashboard
-  user: "postgres",                           // default user
-  password: process.env.PG_DB_PASSWORD,          // from Supabase dashboard
-  database: "postgres",                       // default database
-  port: 5432,                                 // Postgres default
-  max: 15,                                    // your choice
+  user: "postgres",                            // default user
+  password: process.env.PG_DB_PASSWORD,        // from Supabase dashboard
+  database: "postgres",                        // default database
+  port: 5432,                                  // Postgres default
+  max: 15,                                     // your choice
   idleTimeoutMillis: 60000,  
 });
+
+dbConfig.on('error', (err) => {
+  console.error("❌ Unexpected error on idle client:", err);
+});
+
+console.log("✅ Postgres Pool initialized");
 
 module.exports = dbConfig;
