@@ -17,10 +17,11 @@ const getTaskAlerts = (req, res) => {
 const displayAllToDo = async (req, res) => {
     try {
         const userId = req.user.user_id;
-        const [listTask] = await db.query("SELECT * FROM todo_tasks WHERE member_id = ?", [userId]);
+        const listTask = await db.query("SELECT * FROM todo_tasks WHERE member_id = $1", [userId]);
+        const listTasks = listTask.rows;
         res.json({
             message: "Display All tasks Success",
-            task: listTask
+            task: listTasks
         });
     } catch (error) {
         console.error("❌ Error in ToDoController.js:", error.message);
@@ -38,18 +39,19 @@ const filterOneToDo = async (req, res) => {
       return res.status(400).json({ message: "Missing task ID", Result: "False" });
     }
 
-    const [listTask] = await db.query(
-      "SELECT * FROM todo_tasks WHERE task_id = ? AND member_id = ?",
+    const result = await db.query(
+      "SELECT * FROM todo_tasks WHERE task_id = $1 AND member_id = $2",
       [id, member_id]
     );
 
-    if (listTask.length === 0) {
+    if (result.rowCount === 0) {
       return res.status(404).json({ message: "Task not found or not authorized", Result: "False" });
     }
 
+    const task = result.rows[0]; // single row
     res.json({
       message: "Display One task Success",
-      task: listTask
+      task
     });
 
   } catch (error) {
@@ -58,51 +60,64 @@ const filterOneToDo = async (req, res) => {
   }
 };
 
- 
 // Create Task
 const createToDo = async (req, res) => {
-    try {
-        const userId = req.user.user_id;
-        const [userInfo] = await db.query("SELECT email FROM users WHERE user_id = ?", [userId]);
-        const member_email = userInfo[0]?.email;
+  try {
+    const userId = req.user.user_id;
 
-        const { title, toWho,description, toEmail,task_name, start_time, deadline_time, priority, start_status, deadline_status } = req.body;
+    // Get user email
+    const userInfo = await db.query("SELECT email FROM users WHERE user_id = $1", [userId]);
+    const member_email = userInfo.rows[0]?.email;
 
-        if (!title || !description || !task_name || !start_time || !deadline_time || !priority) {
-            return res.status(400).json({ message: "Please fill in all required fields",});
-        }
+    const { title, toWho, description, toEmail, task_name, start_time, deadline_time, priority, start_status, deadline_status } = req.body;
 
-        const [result] = await db.query(
-            "INSERT INTO todo_tasks (member_id, member_email, title, description, task_name, toWho, toEmail,start_time, deadline_time, priority, start_status, deadline_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [userId, member_email, title, description, task_name, toWho, toEmail, start_time, deadline_time, priority, start_status, deadline_status]
-        );
-
-        const [listTask] = await db.query("SELECT * FROM todo_tasks WHERE member_id = ?", [userId]);
-
-        res.json({
-            message: "✅ Task created successfully",
-            task: listTask
-        });
-
-    } catch (error) {
-        console.error("ToDoController.js Error:", error.message);
-        res.status(500).json({ message: "Internal server error", error: error.message });
+    if (!title || !description || !task_name || !start_time || !deadline_time || !priority) {
+      return res.status(400).json({ message: "Please fill in all required fields" });
     }
+
+    // Insert task
+    const result = await db.query(
+      `INSERT INTO todo_tasks 
+       (member_id, member_email, title, description, task_name, toWho, toEmail, start_time, deadline_time, priority, start_status, deadline_status) 
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
+      [userId, member_email, title, description, task_name, toWho, toEmail, start_time, deadline_time, priority, start_status, deadline_status]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(500).json({ message: "Error creating task" });
+    }
+
+    // Get all tasks
+    const listTask = await db.query("SELECT * FROM todo_tasks WHERE member_id = $1", [userId]);
+    res.json({
+      message: "✅ Task created successfully",
+      task: listTask.rows
+    });
+
+  } catch (error) {
+    console.error("ToDoController.js Error:", error.message);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
 };
 
 const report = async (req, res) => {
     try {
-        const { id,username,email,report_email,complain} = req.body;
+        const {username,email,report_email,complain} = req.body;
 
-        if (!id || !username || !email || !complain) {
+        if (!username || !email || !complain) {
             return res.status(400).json({ message: "Missing required parameters", Result: "False" });
         }
 
-        const [result] = await db.query(
-            "INSERT INTO report (id, username,email,report_email,complain) VALUES (?, ?, ?, ?, ?)",
-            [id, username,email,report_email,complain]
+        const result = await db.query(
+            "INSERT INTO report (username,email,report_email,complain) VALUES ($1,$2,$3,$4)",
+            [username,email,report_email,complain]
         );
 
+        if(result.rowCount === 0) {
+          return res.status(500).json({
+            message: 'Failed to create report'
+          });
+        }
       
 
         res.json({
@@ -118,18 +133,22 @@ const report = async (req, res) => {
 
 const feedback = async (req, res) => {
     try {
-        const { id,username,email,feedback} = req.body;
+        const {username,email,feedback} = req.body;
 
-        if (!id || !username || !email || !feedback) {
+        if (!username || !email || !feedback) {
             return res.status(400).json({ message: "Missing required parameters", Result: "False" });
         }
 
-        const [result] = await db.query(
-            "INSERT INTO feedback (id, username,email,feedback) VALUES (?, ?, ?, ?)",
-            [id, username,email,feedback]
+        const result = await db.query(
+            "INSERT INTO feedback (username,email,feedback) VALUES ($1,$2,$3)",
+            [username,email,feedback]
         );
 
-     
+        if(result.rowCount === 0) {
+          return res.status(500).json({
+            message: 'Sorry! Failed to create Feedback. Please try again later.'
+          })
+        }
 
         res.json({
             message: "Thank you for your feedback! It's helpful to us.",
@@ -152,34 +171,30 @@ const deleteToDo = async (req, res) => {
     }
 
     // Ensure the task belongs to the user
-    const [existingTask] = await db.query(
-      "SELECT * FROM todo_tasks WHERE task_id = ? AND member_id = ?",
+    const existingTask = await db.query(
+      "SELECT * FROM todo_tasks WHERE task_id = $1 AND member_id = $2",
       [id, member_id]
     );
 
-    if (existingTask.length === 0) {
+    if (existingTask.rowCount === 0) {
       return res.status(403).json({ message: "Unauthorized or task not found", Result: "False" });
     }
 
-    const [result] = await db.query(
-      "DELETE FROM todo_tasks WHERE task_id = ? AND member_id = ?",
+    const result = await db.query(
+      "DELETE FROM todo_tasks WHERE task_id = $1 AND member_id = $2",
       [id, member_id]
     );
 
-    if (result.affectedRows === 0) {
+    if (result.rowCount === 0) {
       return res.status(404).json({ message: "Task not deleted", Result: "False" });
     }
-
-    const [listTask] = await db.query("SELECT * FROM todo_tasks WHERE member_id = ?", [member_id]);
-
-    res.json({ message: "Delete successful", task: listTask });
+    res.json({ message: "Delete successful" });
 
   } catch (error) {
     console.error("ToDoController.js error in deleteToDo:", error.message);
     res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };
-
 
 // Update Task
 const updateToDo = async (req, res) => {
@@ -189,33 +204,30 @@ const updateToDo = async (req, res) => {
 
     const member_id = req.user.user_id;
 
-    // if (!title || !description || !task_name || !start_time || !deadline_time || !priority || !toEmail) {
-    //   return res.status(400).json({ message: "Missing required parameters", Result: "False" });
-    // }
 
     // Ensure the task belongs to the authenticated user
-    const [existingTask] = await db.query(
-      "SELECT * FROM todo_tasks WHERE task_id = ? AND member_id = ?",
+    const existingTask = await db.query(
+      "SELECT * FROM todo_tasks WHERE task_id = $1 AND member_id = $2",
       [id, member_id]
     );
 
-    if (existingTask.length === 0) {
+    const existingTasks = existingTask.rows;
+
+    if (existingTasks.length === 0) {
       return res.status(403).json({ message: "Unauthorized or task not found", Result: "False" });
     }
 
-    const [result] = await db.query(
+    const result = await db.query(
       `UPDATE todo_tasks 
-       SET title = ?, toWho = ?, toEmail = ?, description = ?, task_name = ?, start_time = ?, 
-           deadline_time = ?, priority = ?, start_status = ?, deadline_status = ?
-       WHERE task_id = ? AND member_id = ?`,
+       SET title = $1, toWho = $2, toEmail = $3, description = $4, task_name = $5, start_time = $6, 
+           deadline_time = $7, priority = $8, start_status = $9, deadline_status = $10
+       WHERE task_id = $11 AND member_id = $12`,
       [title, toWho, toEmail,description, task_name, start_time, deadline_time, priority, start_status, deadline_status, id, member_id]
     );
 
-    if (result.affectedRows === 0) {
+    if (result.rowCount === 0) {
       return res.status(404).json({ message: "Task not updated" });
     }
-
-    const [listTask] = await db.query("SELECT * FROM todo_tasks WHERE member_id = ?", [member_id]);
 
     res.json({ message: "✅ Task updated successfully",});
 
@@ -226,7 +238,6 @@ const updateToDo = async (req, res) => {
 };
 
 
-
 const loginMember = async (req, res) => {
     try {
         const { email, password, timezone } = req.body;
@@ -235,14 +246,14 @@ const loginMember = async (req, res) => {
             return res.status(400).json({ message: "Please provide email and password"});
         }
 
-        const [users] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
-        if (users.length === 0) {
+        const users = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+        if (users.rowCount === 0) {
             return res.status(404).json(
               { message: "No user found ! " }
             );
         }
 
-        const user = users[0];
+        const user = users.rows[0];
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(401).json({ message: "Invalid password :("});
@@ -257,7 +268,7 @@ const loginMember = async (req, res) => {
         }
 
         if (timezone) {
-            await db.query("UPDATE users SET timezone = ? WHERE user_id = ?", [timezone, user.user_id]);
+            await db.query("UPDATE users SET timezone = $1 WHERE user_id = $2", [timezone, user.user_id]);
             user.timezone = timezone; // Ensure updated timezone is included
         }
 
@@ -284,8 +295,6 @@ const loginMember = async (req, res) => {
 };
 
 
-
-
 const createMember = async (req, res) => {
   try {
     const { username, email, password, timezone } = req.body;
@@ -293,7 +302,7 @@ const createMember = async (req, res) => {
     if (!username || !email || !password) {
       return res.status(400).json({ message: "Missing parameters", Result: "False" });
     }
-// const normalizedEmail = email.trim().toLowerCase();
+
     // Hash the password
     const hash = await bcrypt.hash(password, 10);
 
@@ -301,66 +310,65 @@ const createMember = async (req, res) => {
     const pinCode = Math.floor(100000 + Math.random() * 900000).toString();
 
     // Insert user with pin_code and status = 'unverified', pin_created_at = now()
-    const [result] = await db.query(
+    const result = await db.query(
       `INSERT INTO users (username, email, password, timezone, pin_code, pin_created_at, status)
-       VALUES (?, ?, ?, ?, ?, NOW(), 'unverified')`,
+       VALUES ($1, $2, $3, $4, $5, now(), 'unverified')
+       RETURNING user_id`,
       [username, email, hash, timezone || 'UTC', pinCode]
     );
 
-    if (result.affectedRows === 0) {
-      return res.status(500).json({ message: "Error creating member",  });
+    if (result.rowCount === 0) {
+      return res.status(500).json({ message: "Error creating member" });
     }
+
+    const newUser = result.rows[0];
 
     // Send the PIN code via email
     await sendPinCodeEmail(email, pinCode);
 
-    // Optionally create a token here for verification page access (e.g. with user_id)
-    // Example:
-    // You need the new user's email as well — since you inserted it, you have it in req.body.email
-      const token = createToken({
-        user_id: result.insertId,
-        email,
-        timezone: timezone || 'UTC'
-      });
-
-
+    // Create token with returned user_id
+    const token = createToken({
+      user_id: newUser.user_id,
+      email,
+      timezone: timezone || 'UTC'
+    });
 
     res.status(201).json({
       message: "Created successfully, please check your email for the verification code.",
-      user_id: result.insertId,
+      user_id: newUser.user_id,
       token,
       Result: "True"
-      // token
     });
 
   } catch (error) {
-    console.error("Error in createMember:", error);
-    res.status(500).json({ message: "This email is already in use",});
+    console.error("Error in createMember:", error.message);
+
+    if (error.code === '23505') { // unique_violation
+      return res.status(400).json({ message: "This email is already in use" });
+    }
+
+    res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
 
-
 const verifyMember = async (req, res) => {
   const { pin } = req.body;
-  const email = req.user.email; // from JWT middleware
-
-  console.log("verifyMember email from token:",email);
-  console.log("PIN from request:", pin);
+  const email = req.user.email;
 
   try {
     const pinTrimmed = pin.trim();
 
-    const [users] = await db.query(
-      'SELECT * FROM users WHERE email = ? AND pin_code = ?',
+    const users = await db.query(
+      'SELECT * FROM users WHERE email = $1 AND pin_code = $2',
       [email, pinTrimmed]
     );
 
-    if (!users || users.length === 0) {
+    if (!users || users.rowCount === 0) {
       console.log("No matching user or invalid PIN");
       return res.status(400).json({ message: 'Invalid PIN code.' });
     }
 
-    const user = users[0];
+    const user = users.rows[0];
     console.log("User found:", user);
 
     const pinAgeMinutes = (Date.now() - new Date(user.pin_created_at).getTime()) / 60000;
@@ -370,9 +378,9 @@ const verifyMember = async (req, res) => {
       return res.status(400).json({ message: 'PIN code expired. Please request a new one.' });
     }
 
-    // Update status and clear PIN
+
     await db.query(
-      'UPDATE users SET status = ?, pin_code = NULL, pin_created_at = NULL WHERE email = ?',
+      'UPDATE users SET status = $1, pin_code = NULL, pin_created_at = NULL WHERE email = $2',
       ['verified', email]
     );
 
@@ -395,13 +403,13 @@ const resendPin = async (req, res) => {
 
     // Update pin and timestamp in DB
     await db.query(
-      `UPDATE users SET pin_code = ?, pin_created_at = ? WHERE user_id = ?`,
+      `UPDATE users SET pin_code = $1, pin_created_at = $2 WHERE user_id = $3`,
       [pinCode, createdAt, userId]
     );
 
     // Get user's email
-    const [[user]] = await db.query(`SELECT email FROM users WHERE user_id = ?`, [userId]);
-
+    const users = await db.query(`SELECT email FROM users WHERE user_id = $1`, [userId]);
+    const user = users.rows[0];
     // Use the resend email function from email.js
     await sendResendPinEmail(user.email, pinCode);
 
@@ -413,16 +421,14 @@ const resendPin = async (req, res) => {
   }
 };
 
-
-
 const displayName = async (req, res) => {
       try {
         const userIds = req.user.user_id;
-        const [userInfo] = await db.query("SELECT * FROM users WHERE user_id = ?", [userIds]);
-        const name = userInfo[0]?.username;
-        const email = userInfo[0]?.email;
-        const id = userInfo[0]?.user_id;
-        const timezone = userInfo[0]?.timezone;
+        const userInfo = await db.query("SELECT * FROM users WHERE user_id = $1", [userIds]);
+        const name = userInfo.rows[0]?.username;
+        const email = userInfo.rows[0]?.email;
+        const id = userInfo.rows[0]?.user_id;
+        const timezone = userInfo.rows[0]?.timezone;
         res.json({ username: name,
                    email: email,
                    user_id: id,
@@ -438,22 +444,16 @@ const updateAccount = async (req, res)=>{
     const { user_id, username, email, timezone } = req.body;
   const normalizedEmail = email.trim().toLowerCase();
 
-    // if (existingTask.length === 0) {
-    //   return res.status(403).json({ message: "Unauthorized or task not found", Result: "False" });
-    // }
 
-    const [result] = await db.query(
-      `UPDATE users SET username = ?, email = ?, timezone = ? WHERE user_id = ? `,
+    const result = await db.query(
+      `UPDATE users SET username = $1, email = $2, timezone = $3 WHERE user_id = $4 `,
       [username, normalizedEmail , timezone, user_id]
     );
 
-    if (result.affectedRows === 0) {
+    if (result.rowCount === 0) {
       return res.status(404).json({ message: "Account not updated", Result: "False" });
     }
-
-    const [listUser] = await db.query("SELECT * FROM users WHERE user_id = ?", [user_id]);
-
-    res.json({ message: "Account updated successfully", user: listUser });
+    res.json({ message: "Account updated successfully"});
 
   } catch (error) {
     console.error("Update error:", error.message);
@@ -466,14 +466,14 @@ const requestPasswordReset = async (req, res) => {
 
   if (!email) return res.status(400).json({ message: "Please provide your email" });
 
-  const [[user]] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+  const users = await db.query("SELECT * FROM users WHERE email = $1", [email]);
 
-  if (!user) return res.status(404).json({ message: "No user found with this email! o_o" });
+  if (!users || users.rowCount===0) return res.status(404).json({ message: "No user found with this email! o_o" });
 
   const pinCode = Math.floor(100000 + Math.random() * 900000).toString();
 
   await db.query(`
-    UPDATE users SET pin_code = ?, pin_created_at = NOW() WHERE email = ?
+    UPDATE users SET pin_code = $1, pin_created_at = NOW() WHERE email = $2
   `, [pinCode, email]);
 
   await sendResetPasswordPinEmail(email, pinCode); // Reuse the existing function
@@ -481,17 +481,16 @@ const requestPasswordReset = async (req, res) => {
   res.json({ message: "PIN has been sent to your email, please check :)" });
 };
 
-
 const verifyResetPin = async (req, res) => {
   const { email, pin } = req.body;
 
-  const [[user]] = await db.query(
-    "SELECT * FROM users WHERE email = ? AND pin_code = ?",
+  const users = await db.query(
+    "SELECT * FROM users WHERE email = $1 AND pin_code = $2",
     [email, pin.trim()]
   );
 
-  if (!user) return res.status(400).json({ message: "Invalid PIN" });
-
+  if (!users || users.rowCount === 0) return res.status(400).json({ message: "Invalid PIN" });
+  const user = users.rows[0];
   const pinAgeMinutes = (Date.now() - new Date(user.pin_created_at).getTime()) / 60000;
 
   if (pinAgeMinutes > 10) {
@@ -501,7 +500,6 @@ const verifyResetPin = async (req, res) => {
   res.json({ message: "PIN verified. You can now reset your password." });
 };
 
-
 const resetPassword = async (req, res) => {
   const { email, pin, newPassword } = req.body;
 
@@ -509,13 +507,13 @@ const resetPassword = async (req, res) => {
     return res.status(400).json({ message: "Missing fields" ,});
   }
 
-  const [[user]] = await db.query(
-    "SELECT * FROM users WHERE email = ? AND pin_code = ?",
+  const users= await db.query(
+    "SELECT * FROM users WHERE email = $1 AND pin_code = $2",
     [email, pin.trim()]
   );
 
-  if (!user) return res.status(400).json({ message: "Invalid PIN or Email" });
-
+  if (!users || users.rowCount === 0) return res.status(400).json({ message: "Invalid PIN or Email" });
+  const user = users.rows[0];
   const pinAgeMinutes = (Date.now() - new Date(user.pin_created_at).getTime()) / 60000;
   if (pinAgeMinutes > 10) {
     return res.status(400).json({ message: "PIN expired. Please request a new one." });
@@ -524,7 +522,7 @@ const resetPassword = async (req, res) => {
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
   await db.query(`
-    UPDATE users SET password = ?, pin_code = NULL, pin_created_at = NULL WHERE email = ?
+    UPDATE users SET password = $1, pin_code = NULL, pin_created_at = NULL WHERE email = $2
   `, [hashedPassword, email]);
 
   res.json({ message: "Password reset successfully :)" });
@@ -544,15 +542,15 @@ const updatePassword = async (req, res) => {
     const trimmedPin = pin.trim();
 
     // Check if the user with matching PIN exists
-    const [[user]] = await db.query(
-      "SELECT * FROM users WHERE email = ? AND pin_code = ?",
+    const users = await db.query(
+      "SELECT * FROM users WHERE email = $1 AND pin_code = $2",
       [normalizedEmail, trimmedPin]
     );
 
-    if (!user) {
+    if (!users || users.rowCount === 0) {
       return res.status(400).json({ message: "Invalid email or PIN" });
     }
-
+    const user = users.rows[0];
     // Check if the PIN is still valid (within 10 minutes)
     const pinAgeMinutes = (Date.now() - new Date(user.pin_created_at).getTime()) / 60000;
     if (pinAgeMinutes > 10) {
@@ -564,7 +562,7 @@ const updatePassword = async (req, res) => {
 
     // Update password and clear PIN
     await db.query(
-      `UPDATE users SET password = ?, pin_code = NULL, pin_created_at = NULL WHERE email = ?`,
+      `UPDATE users SET password = $1, pin_code = NULL, pin_created_at = NULL WHERE email = $2`,
       [hashedPassword, normalizedEmail]
     );
 
@@ -584,9 +582,9 @@ const resendResetPin = async (req, res) => {
   }
 
   // Check if the user exists
-  const [[user]] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+  const user = await db.query("SELECT * FROM users WHERE email = $1", [email]);
 
-  if (!user) {
+  if (!user || user.rowCount === 0) {
     return res.status(404).json({ message: "No user found with this email" });
   }
 
@@ -595,7 +593,7 @@ const resendResetPin = async (req, res) => {
 
   // Save it to the database with new timestamp
   await db.query(
-    `UPDATE users SET pin_code = ?, pin_created_at = NOW() WHERE email = ?`,
+    `UPDATE users SET pin_code = $1, pin_created_at = NOW() WHERE email = $2`,
     [pinCode, email]
   );
 
@@ -613,15 +611,15 @@ const changePassword = async (req, res) => {
     return res.status(400).json({ message: "Missing current or new password." });
   }
 
-  const [[user]] = await db.query("SELECT password FROM users WHERE user_id = ?", [userId]);
-
+  const users = await db.query("SELECT password FROM users WHERE user_id = $1", [userId]);
+  const user = users.rows[0];
   const isMatch = await bcrypt.compare(currentPassword, user.password);
   if (!isMatch) {
     return res.status(401).json({ message: "Incorrect current password." });
   }
 
   const hashed = await bcrypt.hash(newPassword, 10);
-  await db.query("UPDATE users SET password = ? WHERE user_id = ?", [hashed, userId]);
+  await db.query("UPDATE users SET password = $1 WHERE user_id = $2", [hashed, userId]);
 
   res.json({ message: "Password updated successfully." });
 };

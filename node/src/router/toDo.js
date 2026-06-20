@@ -37,17 +37,32 @@ const ToDo = (app) => {
   app.put('/ToDo/remindme/update/:id', authMiddleware, updateToDo);
   app.delete('/ToDo/remindme/delete/:id', authMiddleware, deleteToDo);
   app.post('/ToDo/remindme/getTaskAlerts', authMiddleware, getTaskAlerts);
-  app.post('/ToDo/remindme/verify', authMiddleware, verifyMember);
-  app.post('/ToDo/remindme/resend-pin', authMiddleware, resendPin);
+
+
   app.get('/ToDo/remindme/profile', authMiddleware, (req, res) => {
     res.json({ message: "This is a protected profile", user: req.user });
   });
+
+
   app.get('/ToDo/remindme/name', authMiddleware, displayName);
+
   app.post('/ToDo/remindme/register', createMember);
+  app.post('/ToDo/remindme/verify', authMiddleware, verifyMember);
   app.post('/ToDo/remindme/login', loginMember);
-  app.put('/ToDo/remindme/updateAccount', authMiddleware, updateAccount);
+
+
+  // forget password
+  // step1
   app.post('/ToDo/remindme/requestPasswordReset', requestPasswordReset);
-  app.post('/ToDo/remindme/verifyResetPin', verifyResetPin);
+  // step 2
+    app.post('/ToDo/remindme/verifyResetPin', verifyResetPin);
+
+  app.post('/ToDo/remindme/resend-pin', authMiddleware, resendPin);
+
+
+  app.put('/ToDo/remindme/updateAccount', authMiddleware, updateAccount);
+
+
   app.put('/ToDo/remindme/resetPassword', resetPassword);
   app.put('/ToDo/remindme/updatePassword', updatePassword);
   app.post('/ToDo/remindme/resendresetpin', resendResetPin);

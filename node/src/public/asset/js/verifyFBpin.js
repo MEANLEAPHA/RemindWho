@@ -1,9 +1,9 @@
 
   const email = sessionStorage.getItem('resetEmail');
-  if (!email) {
-    alert("Email not found. Please start over.");
-    window.location.href = 'forgetPassword.html';
-  }
+  // if (!email) {
+  //   alert("Email not found. Please start over.");
+  //   window.location.href = 'forgetPassword.html';
+  // }
 
   document.getElementById('verifyPinBtn').addEventListener('click', async () => {
     const msg = document.getElementById('msg');

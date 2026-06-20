@@ -40,27 +40,6 @@ $(document).ready(function(){
         });
     }
 
-    // Updated formatDateTime to respect user's local timezone and show TZ abbreviation
-    // function formatDateTime(dateString) {
-    //     const date = new Date(dateString);
-    //     return date.toLocaleString(undefined, {
-    //         year: 'numeric',
-    //         month: 'short',
-    //         day: 'numeric',
-    //         hour: '2-digit',
-    //         minute: '2-digit',
-    //         timeZoneName: 'short'
-    //     });
-    // }
-
-    // function formatDateTime(dateString) {
-    //     const date = new Date(dateString);
-    //     return date.getFullYear() + '-' +
-    //             String(date.getMonth() + 1).padStart(2, '0') + '-' +
-    //             String(date.getDate()).padStart(2, '0') + ' ' +
-    //             String(date.getHours()).padStart(2, '0') + ':' +
-    //             String(date.getMinutes()).padStart(2, '0');
-    //     }
     function formatDateTime(dateString) {
     const date = new Date(dateString); // Converts to local time
     let hours = date.getHours();       // Gets local hours
@@ -180,7 +159,7 @@ function deleteTask(id){
         url: 'https://remindwho.onrender.com/ToDo/remindme/delete/' + id,
         method: 'DELETE',
         headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token')  // ← Token added here
+            'Authorization': 'Bearer ' + localStorage.getItem('token') 
         },
         success: function(response) {
             console.log(response);
