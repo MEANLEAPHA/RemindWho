@@ -25,7 +25,7 @@ schedule.scheduleJob('* * * * *', async () => {
             let recipientEmail;
             let senderEmail = task.member_email;
 
-            const isFriend = task.toWho === 'Friend';
+            const isFriend = task.towho === 'Friend';
             recipientEmail = isFriend ? task.to_email : senderEmail;
 
             const formatBody = (type, type1, type2, type3) => {

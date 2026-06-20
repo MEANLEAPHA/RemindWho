@@ -12,14 +12,14 @@ $(document).ready(function(){
                 const tasks = response.task;
                
                 const taskStyles = {
-                    work:    { color: 'yellow',   class: 'work_card',   icon: 'working-removebg-preview.png' },
-                    reading: { color: 'blue',     class: 'reading_card',   icon: 'reading-removebg-preview.png' },
-                    study:   { color: 'green',    class: 'study_card',     icon: 'studying-removebg-preview.png' },
-                    entertainment:{ color: 'pink',   class: 'entertainment_card',  icon: 'entertainment-removebg-preview.png' },
-                    business:{ color: 'gray',   class: 'business_card',  icon: 'business-removebg-preview.png' },
-                    important:{color: 'gold',     class: 'important_card', icon: 'important-removebg-preview.png' },
-                    urgent:  { color: 'red',      class: 'urgent_card',    icon: 'urgent-removebg-preview.png' },
-                    social:  { color: 'purple',   class: 'social_card',    icon: 'social-removebg-preview.png' },
+                    Work:    { color: 'yellow',   class: 'work_card',   icon: 'working-removebg-preview.png' },
+                    Reading: { color: 'blue',     class: 'reading_card',   icon: 'reading-removebg-preview.png' },
+                    Study:   { color: 'green',    class: 'study_card',     icon: 'studying-removebg-preview.png' },
+                    Entertainment:{ color: 'pink',   class: 'entertainment_card',  icon: 'entertainment-removebg-preview.png' },
+                    BarPropusiness:{ color: 'gray',   class: 'business_card',  icon: 'business-removebg-preview.png' },
+                    Important:{color: 'gold',     class: 'important_card', icon: 'important-removebg-preview.png' },
+                    Urgent:  { color: 'red',      class: 'urgent_card',    icon: 'urgent-removebg-preview.png' },
+                    Social:  { color: 'purple',   class: 'social_card',    icon: 'social-removebg-preview.png' },
                     // Add more if needed
                 };
 
