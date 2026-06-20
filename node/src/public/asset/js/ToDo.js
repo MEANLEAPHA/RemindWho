@@ -10,6 +10,7 @@ $(document).ready(function(){
             },
             success: function(response) {
                 const tasks = response.task;
+                console.log(response.task);
                
                 const taskStyles = {
                     Work:    { color: 'yellow',   class: 'work_card',   icon: 'working-removebg-preview.png' },
