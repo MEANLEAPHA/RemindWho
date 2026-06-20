@@ -25,13 +25,14 @@ require('dotenv').config();
 const { Pool } = require('pg');   // <-- import Pool properly
 
 const dbConfig = new Pool({
-  host: "db.vfdsdzsyouzthauqukau.supabase.co", // from Supabase dashboard
-  user: "postgres",                            // default user
-  password: process.env.PG_DB_PASSWORD,        // from Supabase dashboard
-  database: "postgres",                        // default database
-  port: 5432,                                  // Postgres default
-  max: 15,                                     // your choice
-  idleTimeoutMillis: 60000,  
+  host: "aws-1-ap-southeast-1.pooler.supabase.com",
+  user: "postgres.vdfsdzsyouzthauqukau",                          
+  password: process.env.PG_DB_PASSWORD,       
+  database: "postgres",                        
+  port:  6543,                                
+  max: 15,                                  
+  idleTimeoutMillis: 60000,
+  ssl: { rejectUnauthorized: false }  
 });
 
 dbConfig.on('error', (err) => {
