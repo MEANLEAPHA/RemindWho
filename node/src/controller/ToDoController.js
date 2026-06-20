@@ -78,7 +78,7 @@ const createToDo = async (req, res) => {
     // Insert task
     const result = await db.query(
       `INSERT INTO todo_tasks 
-       (member_id, member_email, title, description, task_name, toWho, toEmail, start_time, deadline_time, priority, start_status, deadline_status) 
+       (member_id, member_email, title, description, task_name, toWho, to_email, start_time, deadline_time, priority, start_status, deadline_status) 
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
       [userId, member_email, title, description, task_name, toWho, toEmail, start_time, deadline_time, priority, start_status, deadline_status]
     );
