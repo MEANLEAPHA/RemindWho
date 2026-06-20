@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/package",
   "name": "node",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "src/server.js",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
@@ -16,6 +16,7 @@
     "node-schedule": "^2.1.1",
     "node-telegram-bot-api": "^0.66.0",
     "nodemailer": "^7.0.3",
+    "pg": "^8.22.0",
     "sequelize": "^6.37.7"
   },
   "devDependencies": {
@@ -23,7 +24,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node sever.js"
+    "start": "node src/sever.js"
   },
   "keywords": [],
   "author": "",
