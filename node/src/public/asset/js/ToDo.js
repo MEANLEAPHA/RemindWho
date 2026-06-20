@@ -11,7 +11,7 @@ $(document).ready(function(){
             success: function(response) {
                 const tasks = response.task;
                 console.log(response.task);
-               
+            
                 const taskStyles = {
                     Work:    { color: 'yellow',   class: 'work_card',   icon: 'working-removebg-preview.png' },
                     Reading: { color: 'blue',     class: 'reading_card',   icon: 'reading-removebg-preview.png' },
@@ -78,7 +78,7 @@ $(document).ready(function(){
                             <div class="content">
                                 <h4 class="title" style='text-align: center;font-size: 18px;'><a><b>${task.title}</b></a></h4>
                                 <p class="description">${task.description}</p>
-                                <p class='priority1'>Remind to : ${task.toEmail}</p>
+                                <p class='priority1'>Remind to : ${task.to_email}</p>
                                 <p class='priority2'>Priority : ${task.priority}</p>
                             </div>
                             <div style="display: grid;gap:0px;margin-top: 4px">
