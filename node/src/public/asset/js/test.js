@@ -3,7 +3,7 @@ $(document).ready(function(){
 
     function LoadTask() {
         $.ajax({
-            url: 'https://remindwho.onrender.com/ToDo/remindme/displayAll',
+            url: 'https://remindwho.picocolor.site/ToDo/remindme/displayAll',
             method: 'GET',
             headers: {
             'Authorization': 'Bearer ' + localStorage.getItem('token')  // ← Token added here
@@ -83,7 +83,7 @@ $(document).ready(function(){
 
   function deleteTask(id){
             $.ajax({                                                                                                            
-                url: 'https://remindwho.onrender.com/ToDo/remindme/delete/' + id,
+                url: 'https://remindwho.picocolor.site/ToDo/remindme/delete/' + id,
                 method: 'DELETE',
                         headers: {
             'Authorization': 'Bearer ' + localStorage.getItem('token')  // ← Token added here
@@ -116,7 +116,7 @@ $(document).ready(function(){
 
     // Fetch task
     $.ajax({
-      url: `https://remindwho.onrender.com/ToDo/remindme/filter/${taskId}`,
+      url: `https://remindwho.picocolor.site/ToDo/remindme/filter/${taskId}`,
       method: 'GET',
          headers: { 'Authorization': 'Bearer ' + token },
       success: function (response) {
@@ -160,7 +160,7 @@ $(document).ready(function(){
       };
 
       $.ajax({
-        url: `https://remindwho.onrender.com/ToDo/remindme/update/${taskId}`,
+        url: `https://remindwho.picocolor.site/ToDo/remindme/update/${taskId}`,
         method: 'PUT',
         headers: { 'Authorization': 'Bearer ' + token },
         contentType: 'application/json',
@@ -193,7 +193,7 @@ $(document).ready(function(){
 
     // Fetch task
     $.ajax({
-      url: `https://remindwho.onrender.com/ToDo/remindme/filter/${taskId}`,
+      url: `https://remindwho.picocolor.site/ToDo/remindme/filter/${taskId}`,
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' + token },
       success: function (response) {
@@ -241,7 +241,7 @@ $(document).ready(function(){
       };
 
       $.ajax({
-        url: `https://remindwho.onrender.com/ToDo/remindme/update/${taskId}`,
+        url: `https://remindwho.picocolor.site/ToDo/remindme/update/${taskId}`,
         method: 'PUT',
         headers: { 'Authorization': 'Bearer ' + token },
         contentType: 'application/json',
@@ -267,7 +267,7 @@ $(document).ready(function(){
 
     function LoadTask() {
         $.ajax({
-            url: 'https://remindwho.onrender.com/ToDo/remindme/displayAll',
+            url: 'https://remindwho.picocolor.site/ToDo/remindme/displayAll',
             method: 'GET',
             headers: {
             'Authorization': 'Bearer ' + localStorage.getItem('token')  // ← Token added here
@@ -403,7 +403,7 @@ $(document).ready(function(){
 
   function deleteTask(id){
             $.ajax({                                                                                                            
-                url: 'https://remindwho.onrender.com/ToDo/remindme/delete/' + id,
+                url: 'https://remindwho.picocolor.site/ToDo/remindme/delete/' + id,
                 method: 'DELETE',
                         headers: {
             'Authorization': 'Bearer ' + localStorage.getItem('token')  // ← Token added here
@@ -443,7 +443,7 @@ $(document).ready(function(){
             };
 
             $.ajax({
-                url: 'https://remindwho.onrender.com/ToDo/remindme/create',
+                url: 'https://remindwho.picocolor.site/ToDo/remindme/create',
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -496,7 +496,7 @@ $(document).ready(function(){
 
     // Fetch task data and fill form
     $.ajax({
-      url: `https://remindwho.onrender.com/ToDo/remindme/filter/${taskId}`,
+      url: `https://remindwho.picocolor.site/ToDo/remindme/filter/${taskId}`,
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' + token },
       success: function (response) {
@@ -534,7 +534,7 @@ $(document).ready(function(){
       };
 
       $.ajax({
-        url: `https://remindwho.onrender.com/ToDo/remindme/update/${taskId}`,
+        url: `https://remindwho.picocolor.site/ToDo/remindme/update/${taskId}`,
         method: 'PUT',
         headers: { 'Authorization': 'Bearer ' + token },
         contentType: 'application/json',
@@ -712,7 +712,7 @@ $(document).ready(function(){
 
     function LoadTask() {
         $.ajax({
-            url: 'https://remindwho.onrender.com/ToDo/remindme/displayAll',
+            url: 'https://remindwho.picocolor.site/ToDo/remindme/displayAll',
             method: 'GET',
             headers: {
             'Authorization': 'Bearer ' + localStorage.getItem('token')  // ← Token added here
@@ -848,7 +848,7 @@ $(document).ready(function(){
 
   function deleteTask(id){
             $.ajax({                                                                                                            
-                url: 'https://remindwho.onrender.com/ToDo/remindme/delete/' + id,
+                url: 'https://remindwho.picocolor.site/ToDo/remindme/delete/' + id,
                 method: 'DELETE',
                         headers: {
             'Authorization': 'Bearer ' + localStorage.getItem('token')  // ← Token added here

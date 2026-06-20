@@ -11,7 +11,7 @@
             };
 
             $.ajax({
-                url: 'https://remindwho.onrender.com/ToDo/remindme/report',
+                url: 'https://remindwho.picocolor.site/ToDo/remindme/report',
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('token')

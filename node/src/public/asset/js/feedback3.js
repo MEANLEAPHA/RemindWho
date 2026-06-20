@@ -10,7 +10,7 @@
             };
 
             $.ajax({
-                url: 'https://remindwho.onrender.com/ToDo/remindme/feedback',
+                url: 'https://remindwho.picocolor.site/ToDo/remindme/feedback',
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('token')

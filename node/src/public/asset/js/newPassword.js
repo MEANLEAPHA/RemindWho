@@ -21,7 +21,7 @@ const email = sessionStorage.getItem('verifiedEmail');
     }
 
     try {
-      const res = await fetch('https://remindwho.onrender.com/ToDo/remindme/resetPassword', {
+      const res = await fetch('https://remindwho.picocolor.site/ToDo/remindme/resetPassword', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'

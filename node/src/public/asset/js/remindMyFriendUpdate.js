@@ -23,7 +23,7 @@ $(document).ready(function () {
 
   // Fetch task and prefill form
   $.ajax({
-    url: `https://remindwho.onrender.com/ToDo/remindme/filter/${taskId}`,
+    url: `https://remindwho.picocolor.site/ToDo/remindme/filter/${taskId}`,
     method: 'GET',
     headers: { 'Authorization': 'Bearer ' + token },
     success: function (response) {
@@ -64,7 +64,7 @@ $(document).ready(function () {
     };
 
     $.ajax({
-      url: `https://remindwho.onrender.com/ToDo/remindme/update/${taskId}`,
+      url: `https://remindwho.picocolor.site/ToDo/remindme/update/${taskId}`,
       method: 'PUT',
       headers: { 'Authorization': 'Bearer ' + token },
       contentType: 'application/json',

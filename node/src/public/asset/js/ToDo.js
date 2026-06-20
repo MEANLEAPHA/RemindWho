@@ -3,7 +3,7 @@ $(document).ready(function(){
 
     function LoadTask() {
         $.ajax({
-            url: 'https://remindwho.onrender.com/ToDo/remindme/displayAll',
+            url: 'https://remindwho.picocolor.site/ToDo/remindme/displayAll',
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('token')  // ← Token added here
@@ -156,7 +156,7 @@ $(document).ready(function(){
 
 function deleteTask(id){
     $.ajax({                                                                                                            
-        url: 'https://remindwho.onrender.com/ToDo/remindme/delete/' + id,
+        url: 'https://remindwho.picocolor.site/ToDo/remindme/delete/' + id,
         method: 'DELETE',
         headers: {
             'Authorization': 'Bearer ' + localStorage.getItem('token') 

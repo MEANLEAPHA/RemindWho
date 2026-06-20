@@ -16,7 +16,7 @@ $('#changeBtn').on('click', function () {
       }
 
       $.ajax({
-        url: 'https://remindwho.onrender.com/ToDo/remindme/changePassword',
+        url: 'https://remindwho.picocolor.site/ToDo/remindme/changePassword',
         method: 'PUT',
         contentType: 'application/json',
         headers: {

@@ -29,7 +29,7 @@
     }
 
     $.ajax({
-      url: 'https://remindwho.onrender.com/ToDo/remindme/verify',
+      url: 'https://remindwho.picocolor.site/ToDo/remindme/verify',
       method: 'POST',
       contentType: 'application/json',
       headers: {
@@ -50,7 +50,7 @@
 
   $('#resendPinBtn').on('click', function () {
     $.ajax({
-      url: 'https://remindwho.onrender.com/ToDo/remindme/resend-pin',
+      url: 'https://remindwho.picocolor.site/ToDo/remindme/resend-pin',
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token
