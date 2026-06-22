@@ -200,7 +200,7 @@ const deleteToDo = async (req, res) => {
 const updateToDo = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, toWho, toEmail,description, task_name, start_time, deadline_time, priority, start_status, deadline_status } = req.body;
+    const { title, toWho,description, task_name, start_time, deadline_time, priority, start_status, deadline_status } = req.body;
 
     const member_id = req.user.user_id;
 
@@ -217,13 +217,33 @@ const updateToDo = async (req, res) => {
       return res.status(403).json({ message: "Unauthorized or task not found", Result: "False" });
     }
 
-    const result = await db.query(
-      `UPDATE todo_tasks 
-       SET title = $1, toWho = $2, toEmail = $3, description = $4, task_name = $5, start_time = $6, 
-           deadline_time = $7, priority = $8, start_status = $9, deadline_status = $10
-       WHERE task_id = $11 AND member_id = $12`,
-      [title, toWho, toEmail,description, task_name, start_time, deadline_time, priority, start_status, deadline_status, id, member_id]
-    );
+   const result = await db.query(
+  `UPDATE todo_tasks 
+   SET title = $1, 
+       toWho = $2, 
+       description = $3, 
+       task_name = $4, 
+       start_time = $5, 
+       deadline_time = $6, 
+       priority = $7, 
+       start_status = $8, 
+       deadline_status = $9
+   WHERE task_id = $10 AND member_id = $11`,
+  [
+    title,          // $1
+    toWho,          // $2
+    description,    // $3
+    task_name,      // $4
+    start_time,     // $5
+    deadline_time,  // $6
+    priority,       // $7
+    start_status,   // $8
+    deadline_status,// $9
+    id,             // $10
+    member_id       // $11
+  ]
+);
+
 
     if (result.rowCount === 0) {
       return res.status(404).json({ message: "Task not updated" });

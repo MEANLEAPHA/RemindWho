@@ -151,7 +151,7 @@ $(document).ready(function () {
     const updatedTask = {
       title: $('#NoteTitle').val(),
       description: $('#description').val(),
-      toEmail: $('#fEmail').val(),
+      // toEmail: $('#fEmail').val(),
       toWho: $('#toWho').val(),
       task_name: $('#cate').val(),
       priority: $('#priority').val(),
