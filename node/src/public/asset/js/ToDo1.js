@@ -1,4 +1,14 @@
-   const toastTrigger = document.querySelector('#liveToastBtn')
+  const token = localStorage.getItem('token');
+          if(!token){
+            alert('Please login first.');
+            
+            setTimeout(() => {
+              window.location.href = 'login.html';
+            }, 3000);
+            
+            return;
+          }
+ const toastTrigger = document.querySelector('#liveToastBtn')
 const toastLiveExample = document.getElementById('liveToast')
 
 if (toastTrigger) {

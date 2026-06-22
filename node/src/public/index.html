@@ -105,16 +105,7 @@
         <script src="asset/js/ToDo.js"></script>
         <script src="asset/js/ToDo2.js"></script>
         <script>
-          const token = localStorage.getItem('token');
-          if(!token){
-            alert('Please login first.');
-            
-            setTimeout(() => {
-              window.location.href = 'login.html';
-            }, 3000);
-            
-            return;
-          }
+         
   const reminder = document.getElementById('reminder-text');
   const messages = [
     "Click on your name to view your account",

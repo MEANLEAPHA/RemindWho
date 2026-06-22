@@ -128,7 +128,7 @@ $(document).ready(function () {
       $('#taskId').val(taskId);
       $('#NoteTitle').val(task.title || '');
       $('#description').val(task.description || '');
-      if (task.task_name) $('#cate').val(task.task_name.toLowerCase());
+      if (task.task_name) $('#cate').val(task.task_name);
       if (task.priority) $('#priority').val(task.priority.toLowerCase());
       $('#startStatus').prop('checked', task.start_status === 'active');
       $('#deadlineStatus').prop('checked', task.deadline_status === 'active');
