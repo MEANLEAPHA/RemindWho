@@ -9,12 +9,18 @@ $(document).ready(function () {
       return;
     }
 
-    function toDatetimeLocal(dateStr) {
-        const date = new Date(dateStr);
-        const offset = date.getTimezoneOffset(); // in minutes
-        const localDate = new Date(date.getTime() - offset * 60000); // offset correction
-        return localDate.toISOString().slice(0, 16);
-    }
+    // function toDatetimeLocal(dateStr) {
+    //     const date = new Date(dateStr);
+    //     const offset = date.getTimezoneOffset(); // in minutes
+    //     const localDate = new Date(date.getTime() - offset * 60000); // offset correction
+    //     return localDate.toISOString().slice(0, 16);
+    // }
+    function formatForDatetimeLocal(pgDate) {
+  const d = new Date(pgDate); // parses the ISO-like string
+  const pad = n => n.toString().padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 
     // Fetch task
     $.ajax({
@@ -22,10 +28,10 @@ $(document).ready(function () {
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' + token },
       success: function (response) {
-        const task = response.task[0];
+        const task = response.task;
         console.log(task);
-        $('#startAt').val(toDatetimeLocal(task.start_time));
-        $('#EndAt').val(toDatetimeLocal(task.deadline_time));
+        $('#startAt').val(formatForDatetimeLocal(task.start_time));
+        $('#EndAt').val(formatForDatetimeLocal(task.deadline_time));
         $('#taskId').val(taskId);
         $('#fEmail').val(task.toEmail || '');
         $('#NoteTitle').val(task.title);
