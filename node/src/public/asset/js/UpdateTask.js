@@ -126,7 +126,6 @@ $(document).ready(function () {
       $('#startAt').val(formatForDatetimeLocal(task.start_time));
       $('#EndAt').val(formatForDatetimeLocal(task.deadline_time));
       $('#taskId').val(taskId);
-      $('#fEmail').val(task.toEmail || '');
       $('#NoteTitle').val(task.title || '');
       $('#description').val(task.description || '');
       if (task.task_name) $('#cate').val(task.task_name.toLowerCase());
