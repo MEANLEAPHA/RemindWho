@@ -23,6 +23,7 @@ $(document).ready(function () {
       headers: { 'Authorization': 'Bearer ' + token },
       success: function (response) {
         const task = response.task[0];
+        console.log(task);
         $('#startAt').val(toDatetimeLocal(task.start_time));
         $('#EndAt').val(toDatetimeLocal(task.deadline_time));
         $('#taskId').val(taskId);
