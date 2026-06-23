@@ -22,10 +22,10 @@ app.get('/', (req, res) => {
 // Import Routes
 try {
     const { ToDo } = require('./router/toDo');
-    console.log("✅ Routes imported successfully");
+
     // Initialize Routes
     ToDo(app);
-    console.log("✅ ToDo routes initialized");
+
 } catch (err) {
     console.error("❌ Error importing routes:", err.message);
 }

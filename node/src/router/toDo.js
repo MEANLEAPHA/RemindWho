@@ -24,7 +24,7 @@ const {
   // validate_token
 } = require('../controller/ToDoController');
 
-const {authMiddleware} = require('../middlerware/authMiddleware');
+const {authMiddleware} = require('../middleware/authMiddleware');
 // Define routes
 const ToDo = (app) => {
   app.get('/ToDo/remindme/displayAll', authMiddleware, displayAllToDo);
