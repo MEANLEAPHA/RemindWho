@@ -181,8 +181,32 @@ Turn on the 'Remind' Me button to receive a reminder email at the specific start
         </div>
   </div>
 </div>
+<div class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="tost-login" class="toast" role="alert" aria-live="assertive" aria-atomic="true" >
+              <div class="toast-header">
+              <img src="https://static.vecteezy.com/system/resources/thumbnails/052/933/905/small/white-envelope-icon-with-transparent-background-png.png" class="rounded me-2" alt="..." style="height: 30px;">
+              <strong class="me-auto">RemindWho</strong>
+              <small class="text" style="background-color: red; width: 20px; height: 20px; border-radius: 50%; color: white; text-align: center; display: flex; align-items: center; justify-content: center;" >1</small>
+            </div>
+            <div class="toast-body">
+              Please Login before using the app
+            </div>
+            </div>
+          </div>
 <script src="asset/js/jquery.js"></script>
 <script src="asset/js/logout.js"></script>
 <script src="asset/js/AddTask.js"></script>
+<script>
+
+        const loginTost = document.querySelector('#tost-login');
+        const loginToastDisplay = bootstrap.Toast.getOrCreateInstance(loginTost);
+         if(!localStorage.getItem("token")){
+            loginToastDisplay.show();
+            setTimeout(()=>{
+              window.location.href = "login.html";
+            },3000)
+         }
+
+        </script>
 </body>
 </html>

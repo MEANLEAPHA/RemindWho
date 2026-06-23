@@ -108,23 +108,33 @@
 
   </div>
 </div>
+  <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="tost-login" class="toast" role="alert" aria-live="assertive" aria-atomic="true" >
+              <div class="toast-header">
+              <img src="https://static.vecteezy.com/system/resources/thumbnails/052/933/905/small/white-envelope-icon-with-transparent-background-png.png" class="rounded me-2" alt="..." style="height: 30px;">
+              <strong class="me-auto">RemindWho</strong>
+              <small class="text" style="background-color: red; width: 20px; height: 20px; border-radius: 50%; color: white; text-align: center; display: flex; align-items: center; justify-content: center;" >1</small>
+            </div>
+            <div class="toast-body">
+              Please Login before using the app
+            </div>
+            </div>
+          </div>
     </main>
-    <br>
-    <br>
-  <!-- <script>
-     function toggleFeedback() {
-            var section = document.getElementById("feedbackSections");
-            section.style.display = section.style.display === "none" ? "block" : "none";
-        }
-        
-        function toggleTextarea(textareaId, checkboxId) {
-            var textarea = document.getElementById(textareaId);
-            var checkbox = document.getElementById(checkboxId);
-            textarea.style.display = checkbox.checked ? "block" : "none";
-        }
-  </script> -->
   <script src="asset/js/jquery.js"></script>
   <script src="asset/js/report.js"></script>
    <script src="asset/js/report1.js"></script>
+   <script>
+
+        const loginTost = document.querySelector('#tost-login');
+        const loginToastDisplay = bootstrap.Toast.getOrCreateInstance(loginTost);
+         if(!localStorage.getItem("token")){
+            loginToastDisplay.show();
+            setTimeout(()=>{
+              window.location.href = "login.html";
+            },3000)
+         }
+
+        </script>
 </body>
 </html>

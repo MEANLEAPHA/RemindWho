@@ -71,15 +71,6 @@
                 <input type="text" class="form-control" id="toWho" value="Friend">
             </div>
 
-      <!-- <div class="mb-3">
-        <label class="form-label">User ID</label>
-        <input type="number" class="form-control" id="userId" required>
-      </div>
-
-             <div class="mb-3">
-                <label class="form-label">User Email</label>
-                <input type="email" class="form-control" id="userEmail" placeholder="Enter user Email" required>
-            </div> -->
 
       <div class="mb-3">
         <label class="form-label">Description</label>
@@ -116,14 +107,6 @@
 
 
        <div class="row mt-3">
-             <!-- <div class="col-lg-6">
-                           <div style="display: flex;align-items: center;padding: 2px 0px 0px 0px;"><label class="form-label">Start Time | </label> <div class="toggle-switch" style="padding: 7px 0px 0px 0px;">
-           <span> <span>| </span>Remind Me</span>
-          <input type="checkbox" id="startStatus">
-                    <label for="StartStatus"></label>
-        </div></div>
-                    <input type="datetime-local" class="form-control" id="startAt" required>
-                </div> -->
 
                  <div class="col-lg-6">
                            <div style="display: flex;align-items: center;padding: 2px 0px 0px 0px;"><label class="form-label">Start Time | </label> <div class="toggle-switch" style="padding: 7px 0px 0px 0px;">
@@ -145,30 +128,6 @@
 
             </div>
 
-      <!-- <div class="row mt-3">
-        <div class="col-lg-6">
-          <label class="form-label">Start Time</label>
-          <input type="datetime-local" class="form-control" id="startAt" required>
-        </div>
-        <div class="col-lg-6">
-          <label class="form-label">Deadline</label>
-          <input type="datetime-local" class="form-control" id="EndAt" required>
-        </div>
-      </div> -->
-<!-- 
-      <div class="mt-3">
-        <div class="toggle-switch">
-          <span>Remind Me</span>
-          <input type="checkbox" id="startStatus">
-          <label for="startStatus"></label>
-        </div>
-
-        <div class="toggle-switch">
-          <span>Remind Me</span>
-          <input type="checkbox" id="deadlineStatus">
-          <label for="deadlineStatus"></label>
-        </div> -->
-
            <button type="submit" class="btn  mt-4" style="background:  tomato;color: white;">Update Task</button>
       </div>
 
@@ -180,65 +139,6 @@ Turn on the 'Remind Friend' button to send your friend a reminder email at the s
 </div>
   </div>
 
-
-<!-- <script>
-  $(document).ready(function () {
-    const taskId = new URLSearchParams(window.location.search).get('id');
-
-    $.ajax({
-      url: `http://localhost:3000/ToDo/readwell/filter/${taskId}`,
-      method: 'GET',
-            headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token')  // ← Token added here
-        },
-      success: function (response) {
-        const task = response.task[0];
-
-        $('#taskId').val(taskId);
-        $('#NoteTitle').val(task.title);
-        // $('#userId').val(task.member_id);
-        // $('#userEmail').val(task.user_email);
-        $('#description').val(task.description);
-        $('#cate').val(task.task_name.toLowerCase());
-        $('#priority').val(task.priority.toLowerCase());
-        $('#startAt').val(new Date(task.start_time).toISOString().slice(0, 16));
-        $('#EndAt').val(new Date(task.deadline_time).toISOString().slice(0, 16));
-        $('#startStatus').prop('checked', task.start_status === 'active');
-        $('#deadlineStatus').prop('checked', task.deadline_status === 'active');
-      }
-    });
-
-    $('#task-form').on('submit', function (e) {
-      e.preventDefault();
-      const updatedTask = {
-        // member_id: $('#userId').val(),
-        // member_email: $('#userEmail').val(),
-        title: $('#NoteTitle').val(),
-        description: $('#description').val(),
-        task_name: $('#cate').val(),
-        priority: $('#priority').val(),
-        start_time: $('#startAt').val(),
-        deadline_time: $('#EndAt').val(),
-        start_status: $('#startStatus').is(':checked') ? 'active' : 'inactive',
-        deadline_status: $('#deadlineStatus').is(':checked') ? 'active' : 'inactive',
-      };
-
-      $.ajax({
-        url: `http://localhost:3000/ToDo/readwell/update/${taskId}`,
-        method: 'PUT',
-              headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token')  // ← Token added here
-        },
-        contentType: 'application/json',
-        data: JSON.stringify(updatedTask),
-        success: function (response) {
-          alert(response.message);
-          location.reload();
-        }
-      });
-    });
-  });
-</script> -->
   <div class="toast-container position-fixed top-0 end-0 p-3">
   <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" >
     <div class="toast-header">
@@ -265,10 +165,33 @@ Turn on the 'Remind Friend' button to send your friend a reminder email at the s
 
   </div>
 </div>
+<div class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="tost-login" class="toast" role="alert" aria-live="assertive" aria-atomic="true" >
+              <div class="toast-header">
+              <img src="https://static.vecteezy.com/system/resources/thumbnails/052/933/905/small/white-envelope-icon-with-transparent-background-png.png" class="rounded me-2" alt="..." style="height: 30px;">
+              <strong class="me-auto">RemindWho</strong>
+              <small class="text" style="background-color: red; width: 20px; height: 20px; border-radius: 50%; color: white; text-align: center; display: flex; align-items: center; justify-content: center;" >1</small>
+            </div>
+            <div class="toast-body">
+              Please Login before using the app
+            </div>
+            </div>
+          </div>
 <script src="asset/js/jquery.js"></script>
 <script src="asset/js/remindMyFriendUpdate.js"></script>
 <script src="asset/js/logout.js"></script>
+<script>
 
+        const loginTost = document.querySelector('#tost-login');
+        const loginToastDisplay = bootstrap.Toast.getOrCreateInstance(loginTost);
+         if(!localStorage.getItem("token")){
+            loginToastDisplay.show();
+            setTimeout(()=>{
+              window.location.href = "login.html";
+            },3000)
+         }
+
+        </script>
 
 </body>
 </html>
