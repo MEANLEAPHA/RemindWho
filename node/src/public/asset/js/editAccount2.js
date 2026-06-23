@@ -12,7 +12,7 @@
       const updatedUser = {
         user_id: $('#id').val(),
         username: $('#username').val(),
-        email: $('#email').val(),
+        // email: $('#email').val(),
         timezone: $('#timezone').val(),
       };
 
