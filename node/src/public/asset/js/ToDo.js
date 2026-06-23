@@ -14,13 +14,13 @@ $(document).ready(function(){
             
                 const taskStyles = {
                     Work:    { color: 'yellow',   class: 'work_card',   icon: 'working-removebg-preview.png' },
-                    Reading: { color: 'blue',     class: 'reading_card',   icon: 'reading-removebg-preview.png' },
-                    Study:   { color: 'green',    class: 'study_card',     icon: 'studying-removebg-preview.png' },
-                    Entertainment:{ color: 'pink',   class: 'entertainment_card',  icon: 'entertainment-removebg-preview.png' },
+                    Hobby: { color: 'blue',     class: 'reading_card',   icon: 'reading-removebg-preview.png' },
+                    Travel:   { color: 'green',    class: 'study_card',     icon: 'studying-removebg-preview.png' },
+                    Meeting:{ color: 'pink',   class: 'entertainment_card',  icon: 'entertainment-removebg-preview.png' },
                     Business:{ color: 'gray',   class: 'business_card',  icon: 'business-removebg-preview.png' },
-                    Important:{color: 'gold',     class: 'important_card', icon: 'important-removebg-preview.png' },
-                    Urgent:  { color: 'red',      class: 'urgent_card',    icon: 'urgent-removebg-preview.png' },
-                    Social:  { color: 'purple',   class: 'social_card',    icon: 'social-removebg-preview.png' },
+                    Task:{color: 'gold',     class: 'important_card', icon: 'important-removebg-preview.png' },
+                    Hangout:  { color: 'red',      class: 'urgent_card',    icon: 'urgent-removebg-preview.png' },
+                    Party:  { color: 'purple',   class: 'social_card',    icon: 'social-removebg-preview.png' },
                     // Add more if needed
                 };
 
