@@ -238,10 +238,7 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
         <div class="header">
             <div class="brand">
                 <i class="fas fa-list-check"></i>
-                <span>RemindMe</span>
-            </div>
-            <div class="badge">
-                <i class="far fa-clock" style="margin-right: 6px;"></i> reminder
+                <span>${task.task_name}</span>
             </div>
         </div>
 
@@ -253,7 +250,6 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
 
         <!-- description -->
         <div class="task-description">
-            <i class="fas fa-align-left"></i>
             ${task.description}
         </div>
 
@@ -270,6 +266,8 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
             <span class="meta-item">
                 <i class="fas fa-play"></i> <strong>Start:</strong> ${startTime}
             </span>
+        </div>
+         <div class="meta-grid">
             <span class="meta-item">
                 <i class="fas fa-stopwatch"></i> <strong>Deadline:</strong> ${deadlineTime}
             </span>
@@ -280,9 +278,6 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
 
         <!-- action / status -->
         <div class="action-line">
-            <span class="bot-signature">
-                <i class="fas fa-robot"></i> Task RemindMe
-            </span>
             <span class="status-badge">
                 <i class="far fa-bell"></i> ${statusText}
             </span>
