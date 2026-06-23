@@ -26,20 +26,8 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
                           task.priority.toLowerCase() === 'medium' ? '#f0b34b' : '#4caf50';
     
     // format times (no timezone)
-    const startTime = new Date(task.start_time).toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-    const deadlineTime = new Date(task.deadline_time).toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+    const startTime = formatForDatetimeLocal(task.start_time);
+    const deadlineTime = formatForDatetimeLocal(task.deadline_time);
 
     // friend note
     const friendHtml = isFriend ? `
@@ -121,10 +109,8 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
             color: #2b4057;
             line-height: 1.5;
             margin: 10px 0 16px 0;
-            padding: 14px 18px;
-            background: #f8fbff;
-            border-radius: 14px;
-            border-left: 4px solid #3d7eb3;
+            padding: 10px;
+      
         }
         .task-description i { margin-right: 10px; color: #3d7eb3; width: 18px; }
         /* priority - bold */
@@ -136,14 +122,11 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
         }
         .priority-tag {
             font-size: 15px;
-            font-weight: 600;
-            background: #f0f4fc;
-            padding: 6px 18px 6px 14px;
-            border-radius: 40px;
+            font-weight: 400;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            color: #1d3b58;
+          
         }
         .priority-tag i { font-size: 15px; width: 18px; }
         /* meta grid - clean */
@@ -237,27 +220,19 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
         <!-- header -->
         <div class="header">
             <div class="brand">
-                <i class="fas fa-list-check"></i>
-                <span>${task.task_name}</span>
+                 ${task.title}
             </div>
         </div>
-
-        <!-- title - bold -->
-        <div class="task-title">
-            <i class="fas fa-circle"></i>
-            ${task.title}
-        </div>
-
         <!-- description -->
         <div class="task-description">
-            ${task.description}
+           " ${task.description} "
         </div>
 
         <!-- priority - bold -->
         <div class="priority-row">
             <span class="priority-tag">
-                <i class="fas fa-flag" style="color: ${priorityColor};"></i>
-                Priority · <strong>${task.priority}</strong>
+                Category - <span>${task.task_name}</span>
+                Priority - <strong>${task.priority}</strong>
             </span>
         </div>
 
@@ -296,6 +271,17 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
 </html>
     `;
 };
+
+  function formatForDatetimeLocal(pgDate) {
+    if (!pgDate) return ''; // guard against undefined/null
+    const d = new Date(pgDate);
+    if (isNaN(d)) {
+      console.warn("⚠️ Could not parse date:", pgDate);
+      return '';
+    }
+    const pad = n => n.toString().padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
 
 // --- PLAIN TEXT (minimal, no fluff) ---
 const generatePlainText = (task, isFriend, senderEmail, alertType) => {
