@@ -117,7 +117,7 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
         .priority-row {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             margin: 2px 0 16px 0;
         }
         .priority-tag {
@@ -232,7 +232,8 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
         <div class="priority-row">
             <span class="priority-tag">
                 <strong>Category </strong> - ${task.task_name}
-                <br/>
+            </span>
+            <span class="priority-tag">            
                 <strong>Priority </strong> - ${task.priority}
             </span>
         </div>
