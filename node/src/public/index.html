@@ -127,9 +127,9 @@
         const loginToastDisplay = bootstrap.Toast.getOrCreateInstance(loginTost);
          if(!localStorage.getItem("token")){
             loginToastDisplay.show();
-            // setTimeout(()=>{
-            //   window.location.href = "login.html";
-            // },3000)
+            setTimeout(()=>{
+              window.location.href = "login.html";
+            },3000)
          }
         const reminder = document.getElementById('reminder-text');
         const messages = [

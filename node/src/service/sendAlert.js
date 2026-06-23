@@ -233,6 +233,8 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
             <span class="priority-tag">
                 <strong>Category </strong> - ${task.task_name}
             </span>
+        </div>
+        <div class="priority-row">
             <span class="priority-tag">            
                 <strong>Priority </strong> - ${task.priority}
             </span>
