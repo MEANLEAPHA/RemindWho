@@ -231,23 +231,11 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
         <!-- priority - bold -->
         <div class="priority-row">
             <span class="priority-tag">
-                Category - <span>${task.task_name}</span>
-                Priority - <strong>${task.priority}</strong>
+                <strong>Category </strong> - ${task.task_name}
+                <br/>
+                <strong>Priority </strong> - ${task.priority}
             </span>
         </div>
-
-        <!-- meta: start + deadline (bold labels) -->
-        <div class="meta-grid">
-            <span class="meta-item">
-                <i class="fas fa-play"></i> <strong>Start:</strong> ${startTime}
-            </span>
-        </div>
-         <div class="meta-grid">
-            <span class="meta-item">
-                <i class="fas fa-stopwatch"></i> <strong>Deadline:</strong> ${deadlineTime}
-            </span>
-        </div>
-
         <!-- friend note (if any) -->
         ${friendHtml}
 
