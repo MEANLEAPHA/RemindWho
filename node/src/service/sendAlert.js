@@ -1,4 +1,3 @@
-
 const { DateTime } = require('luxon');
 const schedule = require('node-schedule');
 const nodemailer = require('nodemailer');
@@ -11,12 +10,12 @@ const transporter = nodemailer.createTransport({
     port: 465,
     secure: true,
     auth: {
-        user: "meanleapha@gmail.com",
-        pass: "wdzdwgybtompthov"
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD
     }
 });
 
-// --- MODERN HTML TEMPLATE (no emoji, no timezone, minimal, Font Awesome) ---
+// --- MODERN HTML TEMPLATE (clean, minimal, bold on important, no emoji, Font Awesome) ---
 const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
     const isStartAlert = alertType === 'start';
     const statusText = isStartAlert ? 'Started' : 'Deadline Reached';
@@ -61,8 +60,8 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
-            background: #f2f5f9;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f0f5fb;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             padding: 30px 16px;
             display: flex;
             justify-content: center;
@@ -71,21 +70,22 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
             margin: 0;
         }
         .card {
-            max-width: 540px;
+            max-width: 520px;
             width: 100%;
             background: #ffffff;
-            border-radius: 28px;
-            box-shadow: 0 20px 40px -12px rgba(0,20,40,0.15);
-            padding: 28px 30px 24px;
-            border: 1px solid rgba(200, 212, 230, 0.2);
+            border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(0, 20, 40, 0.08);
+            padding: 32px 28px 28px;
+            border: 1px solid rgba(200, 215, 235, 0.3);
         }
+        /* header */
         .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 22px;
-            border-bottom: 1px solid #eef2f7;
+            margin-bottom: 20px;
             padding-bottom: 14px;
+            border-bottom: 1px solid #eef3f9;
         }
         .brand {
             display: flex;
@@ -93,67 +93,68 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
             gap: 10px;
             font-weight: 600;
             font-size: 18px;
-            color: #1b2a3f;
-            letter-spacing: -0.3px;
+            color: #1a2f44;
         }
-        .brand i { color: #2f6b9c; font-size: 22px; width: 28px; text-align: center; }
+        .brand i { color: #2b6f9e; font-size: 20px; width: 26px; text-align: center; }
         .badge {
             background: #eaf1fa;
             color: #1e4a73;
             font-size: 13px;
             font-weight: 500;
             padding: 4px 14px;
-            border-radius: 40px;
+            border-radius: 30px;
             border: 1px solid #d6e2f0;
         }
+        /* title - bold & prominent */
         .task-title {
-            font-size: 24px;
-            font-weight: 600;
+            font-size: 26px;
+            font-weight: 700;
             color: #0a1a2b;
-            margin-bottom: 8px;
-            letter-spacing: -0.4px;
-            word-break: break-word;
+            margin-bottom: 6px;
+            letter-spacing: -0.3px;
+            line-height: 1.2;
         }
-        .task-title i { color: #2f6b9c; font-size: 14px; margin-right: 8px; }
+        .task-title i { color: #2b6f9e; font-size: 14px; margin-right: 10px; }
+        /* description - clean */
         .task-description {
             font-size: 15px;
             color: #2b4057;
             line-height: 1.5;
-            margin: 6px 0 14px 0;
-            background: #f8faff;
-            padding: 12px 16px;
-            border-radius: 16px;
+            margin: 10px 0 16px 0;
+            padding: 14px 18px;
+            background: #f8fbff;
+            border-radius: 14px;
             border-left: 4px solid #3d7eb3;
         }
         .task-description i { margin-right: 10px; color: #3d7eb3; width: 18px; }
+        /* priority - bold */
         .priority-row {
             display: flex;
             align-items: center;
             gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 4px;
-            margin-bottom: 18px;
+            margin: 2px 0 16px 0;
         }
         .priority-tag {
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 15px;
+            font-weight: 600;
             background: #f0f4fc;
-            padding: 5px 16px 5px 12px;
+            padding: 6px 18px 6px 14px;
             border-radius: 40px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             color: #1d3b58;
         }
-        .priority-tag i { font-size: 14px; width: 18px; }
+        .priority-tag i { font-size: 15px; width: 18px; }
+        /* meta grid - clean */
         .meta-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px 18px;
-            background: #f6faff;
-            padding: 12px 16px;
-            border-radius: 20px;
-            margin: 14px 0 18px 0;
+            gap: 10px 24px;
+            background: #f7fbff;
+            padding: 14px 18px;
+            border-radius: 16px;
+            margin: 14px 0 16px 0;
             border: 1px solid #e6edf6;
         }
         .meta-item {
@@ -163,10 +164,12 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
             font-size: 14px;
             color: #1d3349;
         }
-        .meta-item i { color: #3b6f9b; width: 18px; font-size: 15px; text-align: center; }
+        .meta-item i { color: #3b6f9b; width: 18px; font-size: 14px; text-align: center; }
+        .meta-item strong { font-weight: 600; color: #0a1a2b; }
+        /* friend note */
         .friend-note {
             background: #f1f7fe;
-            border-radius: 20px;
+            border-radius: 16px;
             padding: 12px 18px;
             margin: 14px 0 18px 0;
             display: flex;
@@ -178,14 +181,15 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
         }
         .friend-note i { color: #2a6b9e; font-size: 18px; width: 24px; text-align: center; }
         .friend-note strong { font-weight: 600; color: #0e2c48; }
+        /* action line */
         .action-line {
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 8px;
-            margin-top: 10px;
-            padding-top: 18px;
+            margin-top: 12px;
+            padding-top: 16px;
             border-top: 1px solid #e3ebf5;
         }
         .bot-signature {
@@ -193,36 +197,38 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
             align-items: center;
             gap: 8px;
             font-size: 15px;
-            font-weight: 450;
+            font-weight: 500;
             color: #1b3855;
         }
         .bot-signature i { color: #3d7eb3; font-size: 18px; }
         .status-badge {
             font-size: 14px;
-            color: #1f4970;
-            background: #e5eff9;
-            padding: 2px 14px;
-            border-radius: 40px;
+            font-weight: 600;
+            color: ${statusColor};
+            background: ${isStartAlert ? '#e5f0fa' : '#f5ebe6'};
+            padding: 4px 16px;
+            border-radius: 30px;
         }
-        .status-badge i { margin-right: 5px; }
+        .status-badge i { margin-right: 6px; }
+        /* footer */
         .micro-footer {
-            margin-top: 22px;
+            margin-top: 20px;
             font-size: 12px;
             color: #58738f;
             text-align: center;
             border-top: 1px solid #eef2f8;
-            padding-top: 16px;
+            padding-top: 14px;
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 4px;
         }
-        .micro-footer a { color: #25638c; text-decoration: none; }
+        .micro-footer a { color: #25638c; text-decoration: none; font-weight: 500; }
         .micro-footer a:hover { text-decoration: underline; color: #0d3e61; }
         .micro-footer i { margin-right: 4px; color: #3f7199; }
         @media (max-width: 460px) {
             .card { padding: 20px 16px; }
-            .task-title { font-size: 21px; }
+            .task-title { font-size: 22px; }
         }
     </style>
 </head>
@@ -239,7 +245,7 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
             </div>
         </div>
 
-        <!-- title -->
+        <!-- title - bold -->
         <div class="task-title">
             <i class="fas fa-circle"></i>
             ${task.title}
@@ -251,21 +257,21 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
             ${task.description}
         </div>
 
-        <!-- priority -->
+        <!-- priority - bold -->
         <div class="priority-row">
             <span class="priority-tag">
                 <i class="fas fa-flag" style="color: ${priorityColor};"></i>
-                Priority · ${task.priority}
+                Priority · <strong>${task.priority}</strong>
             </span>
         </div>
 
-        <!-- meta: start + deadline (no timezone) -->
+        <!-- meta: start + deadline (bold labels) -->
         <div class="meta-grid">
             <span class="meta-item">
-                <i class="fas fa-play"></i> Start: ${startTime}
+                <i class="fas fa-play"></i> <strong>Start:</strong> ${startTime}
             </span>
             <span class="meta-item">
-                <i class="fas fa-stopwatch"></i> Deadline: ${deadlineTime}
+                <i class="fas fa-stopwatch"></i> <strong>Deadline:</strong> ${deadlineTime}
             </span>
         </div>
 
@@ -414,5 +420,3 @@ schedule.scheduleJob('* * * * *', async () => {
         console.error('❌ Error processing task alerts:', error);
     }
 });
-
-console.log('🚀 Task reminder scheduler started successfully!');
