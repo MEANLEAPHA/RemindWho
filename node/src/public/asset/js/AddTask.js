@@ -22,7 +22,7 @@ $(document).ready(function() {
         };
 
         $.ajax({
-            url: 'https://remindwho.picocolor.site/ToDo/remindme/create',
+            url: 'https://remindwho.site/ToDo/remindme/create',
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('token')

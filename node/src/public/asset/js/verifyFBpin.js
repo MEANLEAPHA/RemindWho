@@ -15,7 +15,7 @@
     }
 
     try {
-      const res = await fetch('https://remindwho.picocolor.site/ToDo/remindme/verifyResetPin', {
+      const res = await fetch('https://remindwho.site/ToDo/remindme/verifyResetPin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, pin }),
@@ -41,7 +41,7 @@
 
   document.getElementById('resendPin').addEventListener('click', async () => {
     try {
-      const res = await fetch('https://remindwho.picocolor.site/ToDo/remindme/resendresetpin', {
+      const res = await fetch('https://remindwho.site/ToDo/remindme/resendresetpin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),

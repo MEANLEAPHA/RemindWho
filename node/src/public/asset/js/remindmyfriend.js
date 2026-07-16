@@ -28,7 +28,7 @@
             };
 
             $.ajax({
-                url: 'https://remindwho.picocolor.site/ToDo/remindme/create',
+                url: 'https://remindwho.site/ToDo/remindme/create',
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -39,7 +39,7 @@
                     // alert(response.message);
                     $('#msg').text(response.message).css('color', 'green');
                     $('#task-form')[0].reset();
-                    // location.href = 'http://127.0.0.1:5501/index.html';
+        
                 },
                 error: function(xhr, status, error) {
                     if (xhr.status === 401) {

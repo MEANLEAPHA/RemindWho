@@ -17,7 +17,7 @@
       };
 
       $.ajax({
-        url: `https://remindwho.picocolor.site/ToDo/remindme/updateAccount`,
+        url: `https://remindwho.site/ToDo/remindme/updateAccount`,
         method: 'PUT',
         headers: { 'Authorization': 'Bearer ' + token },
         contentType: 'application/json',
@@ -25,7 +25,7 @@
         success: function (response) {
           $('msg').text(response.message);
           // alert(response.message);
-           location.href = 'https://remindwho.picocolor.site/account.html';
+           location.href = 'https://remindwho.site/account.html';
         },
         error: function(xhr) {
           const message = xhr.responseJSON?.message || xhr.responseText || "Failed to update account.";
