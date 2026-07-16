@@ -205,7 +205,7 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 4px;
-        }
+        } 
         .micro-footer a { color: #25638c; text-decoration: none; font-weight: 500; }
         .micro-footer a:hover { text-decoration: underline; color: #0d3e61; }
         .micro-footer i { margin-right: 4px; color: #3f7199; }
