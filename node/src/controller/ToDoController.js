@@ -100,6 +100,42 @@ const createToDo = async (req, res) => {
   }
 };
 
+const sendMessage = async (req, res) => {
+  try {
+    const { username, email, phones, subject, message } = req.body;
+
+    if (!username || !email || !phones || !message) {
+      return res.status(400).json({
+        message: 'Please fill the required input',
+        result: false
+      });
+    }
+
+    const result = await db.query(
+      "INSERT INTO leap_portfolio (username, email, subject, message, phone) VALUES ($1,$2,$3,$4,$5)",
+      [username, email, subject, message, phones]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(500).json({ msg: 'Failed to send' });
+    }
+
+    res.status(200).json({
+      msg: 'Successfully sent your message to Ha Meanleap! Thanks :)'
+    });
+
+  } catch (err) {
+    console.error("Cannot send message", err.message);
+    res.status(500).json({
+      msg: "Something wrong! Please try again later",
+      error: err.message
+    });
+  }
+};
+
+app.post('/send/message', sendMessage);
+
+
 const report = async (req, res) => {
     try {
         const {username,email,report_email,complain} = req.body;
@@ -665,6 +701,7 @@ module.exports = {
     resetPassword,
     updatePassword,
     resendResetPin,
-    changePassword
+    changePassword,
+    sendMessage
 
 };

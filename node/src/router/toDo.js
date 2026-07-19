@@ -20,7 +20,8 @@ const {
   resetPassword,
   updatePassword,
   resendResetPin,
-  changePassword
+  changePassword,
+  sendMessage
   // validate_token
 } = require('../controller/ToDoController');
 
@@ -66,6 +67,7 @@ const ToDo = (app) => {
   app.post('/ToDo/remindme/resendresetpin', resendResetPin);
   app.put('/ToDo/remindme/changepassword', authMiddleware, changePassword);
 
+  app.post('/send/message', sendMessage);
 };
 
 module.exports = {ToDo};
