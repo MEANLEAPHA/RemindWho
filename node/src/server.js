@@ -22,8 +22,6 @@ app.get('/', (req, res) => {
 // Import Routes
 try {
     const { ToDo } = require('./router/toDo');
-
-    // Initialize Routes
     ToDo(app);
 
 } catch (err) {

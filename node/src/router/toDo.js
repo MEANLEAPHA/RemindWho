@@ -68,6 +68,8 @@ const ToDo = (app) => {
   app.put('/ToDo/remindme/changepassword', authMiddleware, changePassword);
 
   app.post('/send/message', sendMessage);
+
+  
 };
 
 module.exports = {ToDo};

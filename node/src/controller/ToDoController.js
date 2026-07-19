@@ -133,7 +133,7 @@ const sendMessage = async (req, res) => {
   }
 };
 
-app.post('/send/message', sendMessage);
+
 
 
 const report = async (req, res) => {
