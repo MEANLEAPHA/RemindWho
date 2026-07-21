@@ -319,5 +319,5 @@
   importantBtn.onclick = showImportant;
   urgentBtn.onclick = showUrgent;
   businessBtn.onclick = showBusiness;
-    // const content_card = document.getElementById('content-card').style.display = "none";
+
     
