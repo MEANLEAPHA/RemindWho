@@ -32,7 +32,7 @@
                         window.location.href = 'login.html';
                     } 
                     else {
-                     alert('something went wrong. It might be a server issue. Sorry!');
+                     alert('No user found on this email!');
                      
                     }
                 }

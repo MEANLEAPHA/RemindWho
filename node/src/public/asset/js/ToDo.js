@@ -21,7 +21,6 @@ $(document).ready(function(){
                     Task:{color: 'gold',     class: 'important_card', icon: 'important-removebg-preview.png' },
                     Hangout:  { color: 'red',      class: 'urgent_card',    icon: 'urgent-removebg-preview.png' },
                     Party:  { color: 'purple',   class: 'social_card',    icon: 'social-removebg-preview.png' },
-                    // Add more if needed
                 };
 
                 tasks.forEach(task => {
@@ -73,7 +72,7 @@ $(document).ready(function(){
                         <img src="img/pinTop-removebg-preview.png"  style="width: 60px;margin: auto;position: absolute;z-index: 100;top: -20px;left: 47%;">
                         <div class="card card-just-text" data-background="color" data-color="${style.color}" data-radius="none">
                         <h6 class="category" style="float: right;display: flex;justify-content: start; align-items: center;padding:7px 0px 0px 7px;color:rgb(48, 48, 48);opacity:0.6" >
-                            <img src="img/${style.icon}" width="25px" style='opacity:0.8'><i>${task.task_name}</i>
+                            <i>${task.task_name}</i>
                         </h6>
                             <div class="content">
                                 <h4 class="title" style='text-align: center;font-size: 18px;'><a><b>${task.title}</b></a></h4>
@@ -117,7 +116,7 @@ $(document).ready(function(){
                         <img src="img/pinTop-removebg-preview.png"  style="width: 60px;margin: auto;position: absolute;z-index: 100;top: -20px;left: 47%;">
                         <div class="card card-just-text" data-background="color" data-color="${style.color}" data-radius="none">
                         <h6 class="category" style="float: right;display: flex;justify-content: start; align-items: center;padding:7px 0px 0px 7px;color:rgb(48, 48, 48);opacity:0.6" >
-                            <img src="img/${style.icon}" width="25px" style='opacity:0.8'><i>${task.task_name}</i>
+                            <i>${task.task_name}</i>
                         </h6>
                             <div class="content">
                                 <h4 class="title" style='text-align: center;font-size: 18px;'><a><b>${task.title}</b></a></h4>
