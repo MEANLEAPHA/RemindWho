@@ -1,17 +1,36 @@
+require('dotenv').config(); // ensure EMAIL_USER / EMAIL_PASS are loaded from .env
+
 const { DateTime } = require('luxon');
 const schedule = require('node-schedule');
 const nodemailer = require('nodemailer');
 const db = require('../config/db');
 
+// --- Sanity check env vars on startup ---
+if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.error('❌ EMAIL_USER or EMAIL_PASS is missing from environment variables.');
+    console.error('   Make sure they are set in your .env file AND in your hosting panel\'s Node.js environment variables section.');
+} else {
+    console.log('✅ Email env vars loaded. EMAIL_USER:', process.env.EMAIL_USER, '| EMAIL_PASS length:', process.env.EMAIL_PASS.length);
+}
+
 // Email transporter configuration
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     host: 'smtp.gmail.com',
-    secure: false,
-    requireTLS: true,
+    port: 465,
+    secure: true, // true for port 465, false for 587
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
+    }
+});
+
+// Verify transporter connection once on startup (helps catch auth errors early, before the schedule even runs)
+transporter.verify((error, success) => {
+    if (error) {
+        console.error('❌ Nodemailer transporter verification failed:', error.message);
+    } else {
+        console.log('✅ Nodemailer transporter is ready to send emails');
     }
 });
 
@@ -20,11 +39,11 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
     const isStartAlert = alertType === 'start';
     const statusText = isStartAlert ? 'Started' : 'Deadline Reached';
     const statusColor = isStartAlert ? '#2d7fb9' : '#b35f3a';
-    
+
     // priority color (for flag icon)
     const priorityColor = task.priority.toLowerCase() === 'high' ? '#d97747' :
                           task.priority.toLowerCase() === 'medium' ? '#f0b34b' : '#4caf50';
-    
+
     // format times (no timezone)
     const startTime = formatForDatetimeLocal(task.start_time);
     const deadlineTime = formatForDatetimeLocal(task.deadline_time);
@@ -66,7 +85,6 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
             padding: 32px 28px 28px;
             border: 1px solid rgba(200, 215, 235, 0.3);
         }
-        /* header */
         .header {
             display: flex;
             align-items: center;
@@ -93,7 +111,6 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
             border-radius: 30px;
             border: 1px solid #d6e2f0;
         }
-        /* title - bold & prominent */
         .task-title {
             font-size: 26px;
             font-weight: 700;
@@ -103,17 +120,14 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
             line-height: 1.2;
         }
         .task-title i { color: #2b6f9e; font-size: 14px; margin-right: 10px; }
-        /* description - clean */
         .task-description {
             font-size: 15px;
             color: #2b4057;
             line-height: 1.5;
             margin: 10px 0 16px 0;
             padding: 10px;
-      
         }
         .task-description i { margin-right: 10px; color: #3d7eb3; width: 18px; }
-        /* priority - bold */
         .priority-row {
             display: flex;
             align-items: center;
@@ -126,10 +140,8 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-          
         }
         .priority-tag i { font-size: 15px; width: 18px; }
-        /* meta grid - clean */
         .meta-grid {
             display: flex;
             flex-wrap: wrap;
@@ -149,7 +161,6 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
         }
         .meta-item i { color: #3b6f9b; width: 18px; font-size: 14px; text-align: center; }
         .meta-item strong { font-weight: 600; color: #0a1a2b; }
-        /* friend note */
         .friend-note {
             background: #f1f7fe;
             border-radius: 16px;
@@ -164,7 +175,6 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
         }
         .friend-note i { color: #2a6b9e; font-size: 18px; width: 24px; text-align: center; }
         .friend-note strong { font-weight: 600; color: #0e2c48; }
-        /* action line */
         .action-line {
             display: flex;
             align-items: center;
@@ -193,7 +203,6 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
             border-radius: 30px;
         }
         .status-badge i { margin-right: 6px; }
-        /* footer */
         .micro-footer {
             margin-top: 20px;
             font-size: 12px;
@@ -205,7 +214,7 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 4px;
-        } 
+        }
         .micro-footer a { color: #25638c; text-decoration: none; font-weight: 500; }
         .micro-footer a:hover { text-decoration: underline; color: #0d3e61; }
         .micro-footer i { margin-right: 4px; color: #3f7199; }
@@ -217,39 +226,34 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
 </head>
 <body>
     <div class="card">
-        <!-- header -->
         <div class="header">
             <div class="brand">
                  ${task.title}
             </div>
         </div>
-        <!-- description -->
         <div class="task-description">
            " ${task.description} "
         </div>
 
-        <!-- priority - bold -->
         <div class="priority-row">
             <span class="priority-tag">
                 <strong>Category </strong> - ${task.task_name}
             </span>
         </div>
         <div class="priority-row">
-            <span class="priority-tag">            
+            <span class="priority-tag">
                 <strong>Priority </strong> - ${task.priority}
             </span>
         </div>
-        <!-- friend note (if any) -->
+
         ${friendHtml}
 
-        <!-- action / status -->
         <div class="action-line">
             <span class="status-badge">
                 <i class="far fa-bell"></i> ${statusText}
             </span>
         </div>
 
-        <!-- footer -->
         <div class="micro-footer">
             <span><i class="fas fa-rotate-right"></i> automated · reminder</span>
             <span style="display: flex; gap: 14px;">
@@ -263,22 +267,22 @@ const generateHTMLEmail = (task, isFriend, senderEmail, alertType) => {
     `;
 };
 
-  function formatForDatetimeLocal(pgDate) {
+function formatForDatetimeLocal(pgDate) {
     if (!pgDate) return ''; // guard against undefined/null
     const d = new Date(pgDate);
     if (isNaN(d)) {
-      console.warn("⚠️ Could not parse date:", pgDate);
-      return '';
+        console.warn("⚠️ Could not parse date:", pgDate);
+        return '';
     }
     const pad = n => n.toString().padStart(2, '0');
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  }
+}
 
 // --- PLAIN TEXT (minimal, no fluff) ---
 const generatePlainText = (task, isFriend, senderEmail, alertType) => {
     const isStartAlert = alertType === 'start';
     const status = isStartAlert ? 'Started' : 'Deadline Reached';
-    
+
     let msg = `Task: ${task.title}\n`;
     msg += `Status: ${status}\n`;
     msg += `Description: ${task.description}\n`;
@@ -296,7 +300,9 @@ const generatePlainText = (task, isFriend, senderEmail, alertType) => {
 const sendEmail = async (to, subject, htmlContent, textContent) => {
     try {
         const info = await transporter.sendMail({
-            from: `"RemindWho Bot" <meanleapha@gmail.com>`,
+            // IMPORTANT: this address MUST match (or be a verified alias of) process.env.EMAIL_USER,
+            // otherwise Gmail will reject the login with a 535-5.7.8 error.
+            from: `"RemindWho Bot" <${process.env.EMAIL_USER}>`,
             to,
             subject,
             html: htmlContent,
@@ -314,7 +320,7 @@ const sendEmail = async (to, subject, htmlContent, textContent) => {
 schedule.scheduleJob('* * * * *', async () => {
     try {
         console.log('🔄 Checking for task alerts...');
-        
+
         const result = await db.query(`
             SELECT t.*, u.timezone 
             FROM todo_tasks t 
@@ -341,22 +347,22 @@ schedule.scheduleJob('* * * * *', async () => {
                 userNow >= taskStart.setZone(task.timezone)
             ) {
                 console.log(`📤 Sending start alert for: ${task.title}`);
-                
+
                 const htmlContent = generateHTMLEmail(task, isFriend, senderEmail, 'start');
                 const textContent = generatePlainText(task, isFriend, senderEmail, 'start');
-                
+
                 await sendEmail(
                     recipientEmail,
                     `Task Started - ${task.title}`,
                     htmlContent,
                     textContent
                 );
-                
+
                 await db.query(
                     "UPDATE todo_tasks SET start_alert_sent = TRUE WHERE task_id = $1",
                     [task.task_id]
                 );
-                
+
                 console.log(`✅ Start alert sent for: ${task.title}`);
             }
 
@@ -367,26 +373,26 @@ schedule.scheduleJob('* * * * *', async () => {
                 userNow >= taskDeadline.setZone(task.timezone)
             ) {
                 console.log(`📤 Sending deadline alert for: ${task.title}`);
-                
+
                 const htmlContent = generateHTMLEmail(task, isFriend, senderEmail, 'deadline');
                 const textContent = generatePlainText(task, isFriend, senderEmail, 'deadline');
-                
+
                 await sendEmail(
                     recipientEmail,
                     `Task Deadline Reached - ${task.title}`,
                     htmlContent,
                     textContent
                 );
-                
+
                 await db.query(
                     "UPDATE todo_tasks SET deadline_alert_sent = TRUE WHERE task_id = $1",
                     [task.task_id]
                 );
-                
+
                 console.log(`✅ Deadline alert sent for: ${task.title}`);
             }
         }
-        
+
         console.log('✅ Alert check completed');
     } catch (error) {
         console.error('❌ Error processing task alerts:', error);
