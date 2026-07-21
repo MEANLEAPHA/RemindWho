@@ -27,6 +27,8 @@
                 deadline_status: $('#deadlineStatus').is(':checked') ? 'active' : 'inactive',
             };
 
+            console.log('Submitting task payload:', task); 
+
             $.ajax({
                 url: 'https://remindwho.site/ToDo/remindme/create',
                 method: 'POST',

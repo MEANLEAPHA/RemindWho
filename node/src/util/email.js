@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
     port: 465, // Use SSL
     secure: true,
     auth: {
-        user: process.env.EMAIL_USER, // must match the account the app password belongs to
+        user: process.env.EMAIL_USER, 
         pass: process.env.EMAIL_PASS
     }
 });
@@ -77,9 +77,9 @@ const sendResendPinEmail = async (to, pinCode) => {
 };
 
 const sendResetPasswordPinEmail = async (to, pinCode) => {
-    const subject = 'Reset Your RemindMe Password';
+    const subject = 'Reset Your RemindWho Password';
     const html = `
-    <p>We received a request to reset your RemindMe password.</p>
+    <p>We received a request to reset your RemindWho password.</p>
     <p>Use the following 6-digit code:</p>
     <h2 style="letter-spacing: 3px;">${pinCode}</h2>
     <p>This code is valid for 10 minutes. If you didn't request this, please ignore the email.</p>
