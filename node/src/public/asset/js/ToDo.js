@@ -65,7 +65,7 @@ $(document).ready(function(){
         const TaskComplete = (task.start_alert_sent === 1) ? '✅' : '';
         const TaskDeadline = (task.deadline_alert_sent === 1) ? '✅' : '';
 
-        if(task.towho === 'Friend'){
+        if(String(task.towho) === 'Friend'){
             return `
                 <div class="content-cardx ${style.class}" >
                     <div class="card-big-shadow">
